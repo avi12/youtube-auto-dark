@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  type AttributedText,
-  attributedTextSchema
+  attributedTextSchema,
+  type TextHostData
 } from "@/features/live-theme/page/attributed-text/attributed-text-schema";
 import {
   createThemeColorPairs,
@@ -63,7 +63,7 @@ function learnedPairs() {
   return colorPairs;
 }
 
-function fontColorsOf(text: AttributedText) {
+function fontColorsOf(text: TextHostData) {
   return [...JSON.stringify(text).matchAll(/"fontColor":(\d+)/g)].map(([, color]) => Number(color));
 }
 

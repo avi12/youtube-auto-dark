@@ -1,5 +1,5 @@
 import {
-  ATTRIBUTED_STRING_SELECTOR,
+  findTextHosts,
   readLearnedAttributedStrings,
   remapAttributedStrings,
   rerenderAttributedStrings
@@ -15,12 +15,7 @@ function collectAttributedStringElements(records: MutationRecord[]) {
         continue;
       }
 
-      const elHost = node.closest(ATTRIBUTED_STRING_SELECTOR);
-      if (elHost) {
-        elements.add(elHost);
-      }
-
-      for (const element of node.querySelectorAll(ATTRIBUTED_STRING_SELECTOR)) {
+      for (const element of findTextHosts(node)) {
         elements.add(element);
       }
     }

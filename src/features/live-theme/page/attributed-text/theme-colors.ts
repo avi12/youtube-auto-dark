@@ -1,9 +1,9 @@
 import {
   type ArgbColor,
-  type AttributedText,
-  attributedTextSchema,
   InterfaceTheme,
-  type StyleRun
+  type StyleRun,
+  type TextHostData,
+  textHostDataSchema
 } from "@/features/live-theme/page/attributed-text/attributed-text-schema";
 import { collectStyleRuns, mapStyleRuns } from "@/features/live-theme/page/attributed-text/nested-style-runs";
 import { Theme } from "@/lib/theme/theme";
@@ -41,7 +41,7 @@ function readColorMapValue({ run, key }: { run: StyleRun; key: InterfaceTheme })
   return run.styleRunExtensions?.styleRunColorMapExtension?.colorMap.find(entry => entry.key === key)?.value;
 }
 
-export function learnThemeColorPairs({ texts, colorPairs }: { texts: AttributedText[]; colorPairs: ThemeColorPairs }) {
+export function learnThemeColorPairs({ texts, colorPairs }: { texts: TextHostData[]; colorPairs: ThemeColorPairs }) {
   for (const run of collectStyleRuns(texts)) {
     const darkColor = readColorMapValue({
       run,
@@ -88,7 +88,7 @@ export function hasBakedColor({
   colorPairs,
   theme
 }: {
-  text: AttributedText;
+  text: TextHostData;
   colorPairs: ThemeColorPairs;
   theme: Theme;
 }) {
@@ -107,12 +107,12 @@ export function remapBakedColors({
   colorPairs,
   theme
 }: {
-  text: AttributedText;
+  text: TextHostData;
   colorPairs: ThemeColorPairs;
   theme: Theme;
 }) {
   const translation = colorPairs[theme];
-  return attributedTextSchema.parse(
+  return textHostDataSchema.parse(
     mapStyleRuns({
       value: text,
       mapRun: run =>

@@ -26,9 +26,15 @@ export const styleRunSchema = z.looseObject({
 });
 export type StyleRun = z.infer<typeof styleRunSchema>;
 
+/**
+ * What a text-rendering component's `data` holds: an AttributedString (`yt-attributed-string`) or a whole view model
+ * whose attributed strings sit at any depth (`yt-page-header-renderer`); unknown fields pass through untouched
+ */
+export const textHostDataSchema = z.looseObject({});
+export type TextHostData = z.infer<typeof textHostDataSchema>;
+
 /** InnerTube's AttributedString, as `yt-attributed-string` receives it; unknown fields pass through untouched */
 export const attributedTextSchema = z.looseObject({
   content: z.string(),
   styleRuns: z.array(styleRunSchema).optional()
 });
-export type AttributedText = z.infer<typeof attributedTextSchema>;

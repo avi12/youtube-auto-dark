@@ -1,7 +1,7 @@
 import {
-  type AttributedText,
   type StyleRun,
-  styleRunSchema
+  styleRunSchema,
+  type TextHostData
 } from "@/features/live-theme/page/attributed-text/attributed-text-schema";
 import { z } from "@/lib/zod";
 
@@ -18,7 +18,7 @@ export function mapStyleRuns({
   value,
   mapRun
 }: {
-  value: AttributedText | AttributedText[];
+  value: TextHostData | TextHostData[];
   mapRun: (run: StyleRun) => StyleRun;
 }) {
   const copy: unknown = JSON.parse(JSON.stringify(value), (key, child: unknown) => {
@@ -28,7 +28,7 @@ export function mapStyleRuns({
   return copy;
 }
 
-export function collectStyleRuns(value: AttributedText | AttributedText[]) {
+export function collectStyleRuns(value: TextHostData | TextHostData[]) {
   const runs: StyleRun[] = [];
   mapStyleRuns({
     value,
@@ -38,4 +38,12 @@ export function collectStyleRuns(value: AttributedText | AttributedText[]) {
     }
   });
   return runs;
+}
+
+/** A copy of `value` with every style run list, at any depth, emptied */
+export function stripStyleRuns(value: TextHostData) {
+  const copy: unknown = JSON.parse(JSON.stringify(value), (key, child: unknown) =>
+    key === STYLE_RUNS_KEY ? [] : child
+  );
+  return copy;
 }
