@@ -6,15 +6,25 @@ import { repaintColorPalettes } from "@/features/live-theme/page/color-palettes"
 import { applyDocumentTheme } from "@/features/live-theme/page/document-theme";
 import { rethemeLiveChat } from "@/features/live-theme/page/live-chat/retheme-live-chat";
 import { syncMasthead } from "@/features/live-theme/page/masthead";
+import { type ContinuationPlaceholders } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
+import { refetchPanelSections } from "@/features/live-theme/page/section-refetch/refetch-panel-sections";
 import { runThemeActions } from "@/features/live-theme/page/theme-toggled-action";
 import { Theme } from "@/lib/theme/theme";
 
 /**
  * Re-themes the loaded page the way YouTube would if it didn't reload: the theme attributes every token and component
  * reads, the values components cached from them, YouTube's own theme action, then the palettes and text colored for
- * the old theme
+ * the old theme, then panel content the server baked for it
  */
-export async function applyTheme({ theme, colorPairs }: { theme: Theme; colorPairs: ThemeColorPairs }) {
+export async function applyTheme({
+  theme,
+  colorPairs,
+  placeholders
+}: {
+  theme: Theme;
+  colorPairs: ThemeColorPairs;
+  placeholders: ContinuationPlaceholders;
+}) {
   const isDark = theme === Theme.DARK;
   applyDocumentTheme(theme);
   syncCachedThemeProperties(isDark);
@@ -27,4 +37,5 @@ export async function applyTheme({ theme, colorPairs }: { theme: Theme; colorPai
     theme,
     colorPairs
   });
+  await refetchPanelSections(placeholders);
 }
