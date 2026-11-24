@@ -43,6 +43,23 @@ function waitForItems(element: Element) {
   });
 }
 
+/** Every scrolled container around `element` with its offset, so swapping the content can't move the reader */
+function readScrollOffsets(element: Element) {
+  const offsets: {
+    container: Element;
+    scrollTop: number;
+  }[] = [];
+  for (let container = element.parentElement; container; container = container.parentElement) {
+    if (container.scrollTop > 0) {
+      offsets.push({
+        container,
+        scrollTop: container.scrollTop
+      });
+    }
+  }
+  return offsets;
+}
+
 async function refetchSection({ element, placeholders }: { element: Element; placeholders: ContinuationPlaceholders }) {
   const section = readPolymerController(element);
   if (!isItemSection(section)) {
@@ -54,12 +71,16 @@ async function refetchSection({ element, placeholders }: { element: Element; pla
     return;
   }
 
+  const scrollOffsets = readScrollOffsets(element);
   const staleCount = section.data.contents.length;
   const itemsArrived = waitForItems(element);
   // Stamped, the placeholder sends its own request; the response replaces it after the stale items
   section.push(CONTENTS_PATH, { continuationItemRenderer: placeholder });
   await itemsArrived;
   section.splice(CONTENTS_PATH, 0, staleCount);
+  for (const { container, scrollTop } of scrollOffsets) {
+    container.scrollTop = scrollTop;
+  }
 }
 
 /**
