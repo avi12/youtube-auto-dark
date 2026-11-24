@@ -8,19 +8,19 @@ import { hasBakedColor, type ThemeColorPairs } from "@/features/live-theme/page/
 import { type Theme } from "@/lib/theme/theme";
 
 function collectAttributedStringElements(records: MutationRecord[]) {
-  const elements = new Set<Element>();
+  const elHosts = new Set<Element>();
   for (const record of records) {
-    for (const node of record.addedNodes) {
-      if (!(node instanceof Element)) {
+    for (const elAdded of record.addedNodes) {
+      if (!(elAdded instanceof Element)) {
         continue;
       }
 
-      for (const element of findTextHosts(node)) {
-        elements.add(element);
+      for (const elHost of findTextHosts(elAdded)) {
+        elHosts.add(elHost);
       }
     }
   }
-  return elements;
+  return elHosts;
 }
 
 /**
@@ -41,7 +41,7 @@ export function createLateTextRepair() {
     stop();
     observer = new MutationObserver(records => {
       const strings = readLearnedAttributedStrings({
-        elements: collectAttributedStringElements(records),
+        elHosts: collectAttributedStringElements(records),
         colorPairs
       }).filter(({ text }) =>
         hasBakedColor({

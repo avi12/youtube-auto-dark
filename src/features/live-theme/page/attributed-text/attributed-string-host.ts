@@ -37,36 +37,36 @@ const isSignalHost = createGuard(
 );
 
 /** The nearest component rendering each colored text under `root`, `root` included */
-export function findTextHosts(root: Element) {
-  const coloredTexts = [...root.querySelectorAll(RENDERED_COLOR_SELECTOR)];
-  if (root.matches(RENDERED_COLOR_SELECTOR)) {
-    coloredTexts.push(root);
+export function findTextHosts(elRoot: Element) {
+  const elColoredTexts = [...elRoot.querySelectorAll(RENDERED_COLOR_SELECTOR)];
+  if (elRoot.matches(RENDERED_COLOR_SELECTOR)) {
+    elColoredTexts.push(elRoot);
   }
 
-  const hosts = new Set<Element>();
-  for (const coloredText of coloredTexts) {
-    let element: Element | null = coloredText;
-    while (element && !isSignalHost(element)) {
-      element = element.parentElement;
+  const elHosts = new Set<Element>();
+  for (const elColoredText of elColoredTexts) {
+    let elHost: Element | null = elColoredText;
+    while (elHost && !isSignalHost(elHost)) {
+      elHost = elHost.parentElement;
     }
 
-    if (element) {
-      hosts.add(element);
+    if (elHost) {
+      elHosts.add(elHost);
     }
   }
-  return hosts;
+  return elHosts;
 }
 
-function readAttributedString(element: Element) {
-  if (!isSignalHost(element)) {
+function readAttributedString(elHost: Element) {
+  if (!isSignalHost(elHost)) {
     return undefined;
   }
 
-  const parsedText = textHostDataSchema.safeParse(element.rawProps.data());
+  const parsedText = textHostDataSchema.safeParse(elHost.rawProps.data());
   return parsedText.success
     ? {
         text: parsedText.data,
-        setData: element.setters.data
+        setData: elHost.setters.data
       }
     : undefined;
 }
@@ -75,13 +75,13 @@ export type AttributedStringUpdate = NonNullable<ReturnType<typeof readAttribute
 
 /** Reads every element's attributed string and teaches `colorPairs` the pairs they carry */
 export function readLearnedAttributedStrings({
-  elements,
+  elHosts,
   colorPairs
 }: {
-  elements: Iterable<Element>;
+  elHosts: Iterable<Element>;
   colorPairs: ThemeColorPairs;
 }) {
-  const strings = [...elements].map(readAttributedString).filter(attributedString => attributedString !== undefined);
+  const strings = [...elHosts].map(readAttributedString).filter(attributedString => attributedString !== undefined);
   learnThemeColorPairs({
     texts: strings.map(({ text }) => text),
     colorPairs
