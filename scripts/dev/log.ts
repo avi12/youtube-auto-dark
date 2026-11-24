@@ -8,7 +8,7 @@ import { z } from "zod";
  * Mirrors every console line (ours and WXT's) to dev-logs/<browser>.log, so the session that died can still be read
  * after the terminal is gone. Synchronous appends keep the line that explains a crash on disk
  */
-const DEV_LOG_DIR = resolve(import.meta.dirname, "..", "..", "dev-logs");
+const DEV_LOG_DIRECTORY = resolve(import.meta.dirname, "..", "..", "dev-logs");
 const MAX_ENTRY_CHARS = 2000;
 const INSPECT_DEPTH = 2;
 let devLogPath: string | undefined;
@@ -33,8 +33,8 @@ function appendToDevLog({ level, args }: { level: string; args: unknown[] }) {
 }
 
 export function initDevLog(browserName: string) {
-  mkdirSync(DEV_LOG_DIR, { recursive: true });
-  devLogPath = join(DEV_LOG_DIR, `${browserName.toLowerCase()}.log`);
+  mkdirSync(DEV_LOG_DIRECTORY, { recursive: true });
+  devLogPath = join(DEV_LOG_DIRECTORY, `${browserName.toLowerCase()}.log`);
   writeFileSync(devLogPath, "");
   for (const level of ["log", "warn", "error"] as const) {
     const original = console[level].bind(console);

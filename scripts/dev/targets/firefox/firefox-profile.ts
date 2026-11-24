@@ -7,7 +7,7 @@ import { logEvent } from "#dev/log";
 import { cloneProfileFiles } from "#dev/targets/profile-clone";
 
 const APPDATA = process.env[DevEnvVar.AppData] ?? "";
-const FIREFOX_DATA_DIRS: Partial<Record<NodeJS.Platform, string>> = {
+const FIREFOX_DATA_DIRECTORIES: Partial<Record<NodeJS.Platform, string>> = {
   win32: join(APPDATA, "Mozilla", "Firefox"),
   darwin: join(homedir(), "Library", "Application Support", "Firefox"),
   linux: join(homedir(), ".mozilla", "firefox")
@@ -37,18 +37,18 @@ const THEME_PIN_PREFS = [
 const INSTALL_DEFAULT_PATTERN = /^\[Install[\dA-F]+\][\n\r]+(?:[^\n\r]*[\n\r]+)*?Default=(?<path>.+)$/m;
 
 function findDefaultFirefoxProfile() {
-  const dataDir = FIREFOX_DATA_DIRS[platform()];
-  const profilesIniPath = dataDir && join(dataDir, "profiles.ini");
-  if (!dataDir || !profilesIniPath || !existsSync(profilesIniPath)) {
+  const dataDirectory = FIREFOX_DATA_DIRECTORIES[platform()];
+  const profilesIniPath = dataDirectory && join(dataDirectory, "profiles.ini");
+  if (!dataDirectory || !profilesIniPath || !existsSync(profilesIniPath)) {
     return undefined;
   }
 
   const relativePath = INSTALL_DEFAULT_PATTERN.exec(readFileSync(profilesIniPath, "utf-8"))?.groups?.path;
-  return relativePath ? join(dataDir, relativePath.trim()) : undefined;
+  return relativePath ? join(dataDirectory, relativePath.trim()) : undefined;
 }
 
-function stripThemePins(profileDir: string) {
-  const prefsPath = join(profileDir, "prefs.js");
+function stripThemePins(profileDirectory: string) {
+  const prefsPath = join(profileDirectory, "prefs.js");
   if (!existsSync(prefsPath)) {
     return;
   }
@@ -62,47 +62,47 @@ function stripThemePins(profileDir: string) {
 
 /** Pins the moz-extension:// UUID across sessions; user.js is merged into the prefs at every startup */
 function writeUserJs({
-  profileDir,
+  profileDirectory,
   geckoId,
   extensionUuid
 }: {
-  profileDir: string;
+  profileDirectory: string;
   geckoId: string;
   extensionUuid: string;
 }) {
   const uuidMap = JSON.stringify({ [geckoId]: extensionUuid });
   writeFileSync(
-    join(profileDir, "user.js"),
+    join(profileDirectory, "user.js"),
     `user_pref("extensions.webextensions.uuids", ${JSON.stringify(uuidMap)});\n`
   );
 }
 
 /** Re-cloned every launch, so a fresh login in the real Firefox reaches the dev profile on the next run */
 export function setupFirefoxProfile({
-  profileDir,
+  profileDirectory,
   geckoId,
   extensionUuid
 }: {
-  profileDir: string;
+  profileDirectory: string;
   geckoId: string;
   extensionUuid: string;
 }) {
-  mkdirSync(profileDir, { recursive: true });
-  const sourceDir = findDefaultFirefoxProfile();
-  if (sourceDir && existsSync(sourceDir)) {
-    logEvent(`Cloning the Firefox session from ${sourceDir}`);
+  mkdirSync(profileDirectory, { recursive: true });
+  const sourceDirectory = findDefaultFirefoxProfile();
+  if (sourceDirectory && existsSync(sourceDirectory)) {
+    logEvent(`Cloning the Firefox session from ${sourceDirectory}`);
     cloneProfileFiles({
-      sourceDir,
-      destinationDir: profileDir,
+      sourceDirectory,
+      destinationDirectory: profileDirectory,
       files: SESSION_FILES
     });
   }
 
-  stripThemePins(profileDir);
+  stripThemePins(profileDirectory);
   writeUserJs({
-    profileDir,
+    profileDirectory,
     geckoId,
     extensionUuid
   });
-  return profileDir;
+  return profileDirectory;
 }

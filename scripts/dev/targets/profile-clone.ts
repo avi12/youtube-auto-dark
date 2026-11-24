@@ -29,18 +29,18 @@ function cloneFile({ sourcePath, destinationPath }: { sourcePath: string; destin
 }
 
 export function cloneProfileFiles({
-  sourceDir,
-  destinationDir,
+  sourceDirectory,
+  destinationDirectory,
   files
 }: {
-  sourceDir: string;
-  destinationDir: string;
+  sourceDirectory: string;
+  destinationDirectory: string;
   files: string[];
 }) {
   for (const file of files) {
     cloneFile({
-      sourcePath: join(sourceDir, file),
-      destinationPath: join(destinationDir, file)
+      sourcePath: join(sourceDirectory, file),
+      destinationPath: join(destinationDirectory, file)
     });
   }
 }

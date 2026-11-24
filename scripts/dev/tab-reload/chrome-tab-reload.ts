@@ -32,11 +32,11 @@ export async function reloadChromeYouTubeTabs(cdpPort: Port) {
 }
 
 async function reloadTarget(webSocketDebuggerUrl: string) {
-  const rpc = await openWebSocketRpc<CdpMethod>(webSocketDebuggerUrl);
-  await rpc.send({
+  const webSocketRpc = await openWebSocketRpc<CdpMethod>(webSocketDebuggerUrl);
+  await webSocketRpc.send({
     method: CdpMethod.PageReload,
     params: {},
     resultSchema: z.unknown()
   });
-  rpc.close();
+  webSocketRpc.close();
 }

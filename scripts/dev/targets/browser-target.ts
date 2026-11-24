@@ -5,8 +5,8 @@ import type webExtRun from "web-ext-run";
 import { YOUTUBE_ORIGIN } from "#dev/tab-reload/youtube-url";
 
 export const PROJECT_ROOT = resolve(import.meta.dirname, "..", "..", "..");
-export const USER_PROFILES_DIR = resolve(PROJECT_ROOT, "user-profiles");
-const BUILD_DIR = resolve(PROJECT_ROOT, "build");
+export const USER_PROFILES_DIRECTORY = resolve(PROJECT_ROOT, "user-profiles");
+const BUILD_DIRECTORY = resolve(PROJECT_ROOT, "build");
 
 export type WebExtRunner = Awaited<ReturnType<typeof webExtRun.cmd.run>>;
 
@@ -28,14 +28,14 @@ export interface BrowserTarget {
   }>;
 }
 
-function outputDirOf(target: Pick<BrowserTarget, "outDirTemplate">) {
-  return resolve(BUILD_DIR, target.outDirTemplate);
+function outputDirectoryOf(target: Pick<BrowserTarget, "outDirTemplate">) {
+  return resolve(BUILD_DIRECTORY, target.outDirTemplate);
 }
 
 /** The web-ext-run launch options every target shares: the built extension, YouTube open, a kept profile, no prompts */
 export function webExtRunBaseOptions(target: Pick<BrowserTarget, "outDirTemplate">) {
   return {
-    sourceDir: outputDirOf(target),
+    sourceDir: outputDirectoryOf(target),
     startUrl: [YOUTUBE_ORIGIN],
     keepProfileChanges: true,
     noReload: true,

@@ -25,15 +25,15 @@ enum BidiMethod {
  * content script. One short-lived session per reload, since the Remote Agent allows a single BiDi session at a time
  */
 export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
-  const rpc = await openWebSocketRpc<BidiMethod>(`ws://${LOOPBACK_HOST}:${remotePort}/session`);
-  await rpc.send({
+  const webSocketRpc = await openWebSocketRpc<BidiMethod>(`ws://${LOOPBACK_HOST}:${remotePort}/session`);
+  await webSocketRpc.send({
     method: BidiMethod.SessionNew,
     params: {
       capabilities: {}
     },
     resultSchema: z.unknown()
   });
-  const { contexts } = await rpc.send({
+  const { contexts } = await webSocketRpc.send({
     method: BidiMethod.GetTree,
     params: {
       maxDepth: 0
@@ -44,7 +44,7 @@ export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
   for (const { context, url } of contexts) {
     if (isYouTubeUrl(url)) {
       reloads.push(
-        rpc.send({
+        webSocketRpc.send({
           method: BidiMethod.Reload,
           params: {
             context
@@ -55,10 +55,10 @@ export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
     }
   }
   await Promise.allSettled(reloads);
-  await rpc.send({
+  await webSocketRpc.send({
     method: BidiMethod.SessionEnd,
     params: {},
     resultSchema: z.unknown()
   });
-  rpc.close();
+  webSocketRpc.close();
 }
