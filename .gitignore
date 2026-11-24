@@ -1,0 +1,28 @@
+node_modules/
+.output/
+.wxt/
+.fallow/
+.svelte-check/
+build/
+user-profiles/
+dev-logs/
+tmp/
+*.log
+
+# Credentials - never commit
+keys/
+*.env
+.env.*
+
+# Claude Code
+.claude/
+.mcp.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+
+# Lint cache
+.verify/

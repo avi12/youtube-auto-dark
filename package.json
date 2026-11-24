@@ -1,0 +1,65 @@
+{
+  "name": "youtube-auto-dark",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Makes YouTube's \"Use device theme\" switch live the moment your system goes light or dark",
+  "homepage": "https://github.com/avi12/youtube-auto-dark",
+  "bugs": "https://github.com/avi12/youtube-auto-dark/issues",
+  "license": "GPL-3.0-only",
+  "author": "Avi (https://avi12.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avi12/youtube-auto-dark.git"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "imports": {
+    "#dev/*": "./scripts/dev/*.ts"
+  },
+  "scripts": {
+    "dev": "tsx scripts/dev/index.ts",
+    "dev:firefox": "tsx scripts/dev/index.ts --firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox --mv3",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox --mv3",
+    "compile": "tsrs --noEmit",
+    "lint": "avi12-lint",
+    "lint:fix": "avi12-lint --fix",
+    "test": "vitest run",
+    "fallow": "fallow audit --base HEAD",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "avi12-lint": "github:avi12/lint-config#v0.11.0&path:/packages/avi12-lint",
+    "eslint": "^10.15.0",
+    "eslint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/eslint-config",
+    "eslint-plugin-svelte": "3.24.1",
+    "fallow": "2.103.0",
+    "fallow-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/fallow-config",
+    "oxfmt": "^0.79.0",
+    "oxfmt-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/oxfmt-config",
+    "oxlint": "1.94.0",
+    "oxlint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/oxlint-config",
+    "oxlint-plugin-naming": "github:avi12/lint-config#v0.11.0&path:/packages/oxlint-plugin-naming",
+    "postcss": "^8.5.33",
+    "postcss-html": "^2.0.1",
+    "stylelint": "^18.0.0",
+    "stylelint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/stylelint-config",
+    "svelte-eslint-parser": "1.10.1",
+    "tsrs": "0.25.0-ts7.1.0-beta",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0",
+    "web-ext-run": "^0.2.4",
+    "wxt": "^0.21.5"
+  },
+  "packageManager": "pnpm@11.13.1"
+}

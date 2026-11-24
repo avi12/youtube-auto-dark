@@ -1,0 +1,9 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "types": ["node"]
+  },
+  "files": [".wxt/wxt.d.ts"],
+  "include": ["src/**/*", "scripts/**/*", "*.ts"]
+}
