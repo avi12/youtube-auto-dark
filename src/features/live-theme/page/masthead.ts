@@ -35,6 +35,9 @@ export function syncMasthead(isDark: boolean) {
   }
 
   controller.isDarkThemeForced = false;
+  // The searchbox's dark class is `forceDarkMode || <html dark>`, recomputed only when `forceDarkMode` (bound to `dark`)
+  // changes, so `dark` passes through the other value for the binding to fire even when it already holds `isDark`
+  controller.dark = !isDark;
   controller.dark = isDark;
 
   if (controller.shouldShowCinematicMastHead()) {
