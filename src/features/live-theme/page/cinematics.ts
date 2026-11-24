@@ -18,8 +18,8 @@ const isCinematicsController = createGuard(
  * (`controller.isDarkModeEnabled = ...; controller.update()`); this does the same for the new theme
  */
 export function syncCinematics(isDark: boolean) {
-  for (const element of document.querySelectorAll(CINEMATICS_OWNER_SELECTOR)) {
-    for (const value of Object.values(readPolymerController(element) ?? {})) {
+  for (const elOwner of document.querySelectorAll(CINEMATICS_OWNER_SELECTOR)) {
+    for (const value of Object.values(readPolymerController(elOwner) ?? {})) {
       if (isCinematicsController(value)) {
         value.isDarkModeEnabled = isDark;
         value.update();

@@ -12,10 +12,10 @@ enum ThemeAction {
 export function runThemeActions(isDark: boolean) {
   callActionHandlers({
     actionName: ThemeAction.DARK_MODE_TOGGLED,
-    args: [isDark]
+    actionArguments: [isDark]
   });
   callActionHandlers({
     actionName: isDark ? ThemeAction.DARK_THEME : ThemeAction.LIGHT_THEME,
-    args: []
+    actionArguments: []
   });
 }

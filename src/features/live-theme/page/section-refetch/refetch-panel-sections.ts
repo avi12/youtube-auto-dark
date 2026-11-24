@@ -24,11 +24,11 @@ const isPlaceholderContainer = createGuard(
   })
 );
 
-function waitForResponse(container: Element) {
+function waitForResponse(elContainer: Element) {
   return new Promise<void>(resolve => {
     const listeners = new AbortController();
     for (const eventName of RESPONSE_APPLIED_EVENTS) {
-      container.addEventListener(
+      elContainer.addEventListener(
         eventName,
         () => {
           listeners.abort();
@@ -40,37 +40,37 @@ function waitForResponse(container: Element) {
   });
 }
 
-/** Every scrolled container around `element` with its offset, so swapping the content can't move the reader */
-function readScrollOffsets(element: Element) {
+/** Every scrolled container around `elTarget` with its offset, so swapping the content can't move the reader */
+function readScrollOffsets(elTarget: Element) {
   const offsets: {
-    container: Element;
+    elContainer: Element;
     scrollTop: number;
   }[] = [];
-  for (let container = element.parentElement; container; container = container.parentElement) {
-    if (container.scrollTop > 0) {
+  for (let elContainer = elTarget.parentElement; elContainer; elContainer = elContainer.parentElement) {
+    if (elContainer.scrollTop > 0) {
       offsets.push({
-        container,
-        scrollTop: container.scrollTop
+        elContainer,
+        scrollTop: elContainer.scrollTop
       });
     }
   }
   return offsets;
 }
 
-async function refetchContainer({ placeholder, container }: PlaceholderTarget) {
-  if (!container.isConnected) {
+async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget) {
+  if (!elContainer.isConnected) {
     return;
   }
 
-  const section = readPolymerController(container);
+  const section = readPolymerController(elContainer);
   if (!isPlaceholderContainer(section)) {
     return;
   }
 
-  const scrollOffsets = readScrollOffsets(container);
+  const scrollOffsets = readScrollOffsets(elContainer);
   const staleItems = [...section.data.contents];
   const placeholderItem = { continuationItemRenderer: placeholder };
-  const responseApplied = waitForResponse(container);
+  const responseApplied = waitForResponse(elContainer);
   // Stamped, the placeholder sends its own request, whatever slot the response then fills
   section.push(CONTENTS_PATH, placeholderItem);
   await responseApplied;
@@ -88,8 +88,8 @@ async function refetchContainer({ placeholder, container }: PlaceholderTarget) {
     section.splice(CONTENTS_PATH, 0, staleItems.length);
   }
 
-  for (const { container: scroller, scrollTop } of scrollOffsets) {
-    scroller.scrollTop = scrollTop;
+  for (const { elContainer: elScroller, scrollTop } of scrollOffsets) {
+    elScroller.scrollTop = scrollTop;
   }
 }
 

@@ -7,8 +7,8 @@ import { readPolymerController } from "@/features/live-theme/page/polymer";
 const CACHED_THEME_PROPERTIES = ["isDarkTheme", "isDarkTheme_", "isDarkMode", "isDark", "pageDarkTheme"] as const;
 
 export function syncCachedThemeProperties(isDark: boolean) {
-  for (const element of document.querySelectorAll("*")) {
-    const controller = readPolymerController(element);
+  for (const elComponent of document.querySelectorAll("*")) {
+    const controller = readPolymerController(elComponent);
     if (!controller) {
       continue;
     }

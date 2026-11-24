@@ -15,8 +15,8 @@ const isDataChangedOwner = createGuard(
 
 /** Has each palette host pick its palette again - its own `dataChanged` reads `<html dark>` to choose */
 export function repaintColorPalettes() {
-  for (const element of document.querySelectorAll(PALETTE_HOST_SELECTOR)) {
-    const controller = readPolymerController(element);
+  for (const elHost of document.querySelectorAll(PALETTE_HOST_SELECTOR)) {
+    const controller = readPolymerController(elHost);
     if (isDataChangedOwner(controller)) {
       controller.dataChanged();
     }

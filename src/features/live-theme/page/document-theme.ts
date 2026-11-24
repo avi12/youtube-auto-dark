@@ -17,8 +17,8 @@ export function readRenderedTheme() {
  */
 export function applyDocumentTheme(theme: Theme) {
   const isDark = theme === Theme.DARK;
-  for (const element of [document.documentElement, document.body]) {
-    element.toggleAttribute(ThemeAttribute.DARK, isDark);
-    element.toggleAttribute(ThemeAttribute.LIGHT, !isDark);
+  for (const elRoot of [document.documentElement, document.body]) {
+    elRoot.toggleAttribute(ThemeAttribute.DARK, isDark);
+    elRoot.toggleAttribute(ThemeAttribute.LIGHT, !isDark);
   }
 }

@@ -16,15 +16,19 @@ export type ContinuationPlaceholder = z.infer<typeof continuationItemSchema>;
 /** The component a response's items land in, named by the `targetId` YouTube's response carries */
 export interface PlaceholderTarget {
   placeholder: ContinuationPlaceholder;
-  container: Element;
+  elContainer: Element;
 }
 
 /** The nearest component inside the panel that a continuation response can be addressed to */
-function findContainer(placeholderElement: Element) {
-  const panel = placeholderElement.closest(PANEL_SELECTOR);
-  for (let element = placeholderElement.parentElement; element && element !== panel; element = element.parentElement) {
-    if (isTargetedContainer(readPolymerController(element))) {
-      return element;
+function findContainer(elPlaceholder: Element) {
+  const panel = elPlaceholder.closest(PANEL_SELECTOR);
+  for (
+    let elAncestor = elPlaceholder.parentElement;
+    elAncestor && elAncestor !== panel;
+    elAncestor = elAncestor.parentElement
+  ) {
+    if (isTargetedContainer(readPolymerController(elAncestor))) {
+      return elAncestor;
     }
   }
   return undefined;
@@ -39,18 +43,18 @@ function findContainer(placeholderElement: Element) {
 export function createContinuationPlaceholders() {
   const placeholders = new Map<string, PlaceholderTarget>();
 
-  function remember(element: Element) {
-    const container = findContainer(element);
-    if (!container) {
+  function remember(elPlaceholder: Element) {
+    const elContainer = findContainer(elPlaceholder);
+    if (!elContainer) {
       return;
     }
 
-    const controller = readPolymerController(element);
+    const controller = readPolymerController(elPlaceholder);
     if (!isContinuationController(controller)) {
       return;
     }
 
-    const containerController = readPolymerController(container);
+    const containerController = readPolymerController(elContainer);
     if (!isTargetedContainer(containerController)) {
       return;
     }
@@ -59,7 +63,7 @@ export function createContinuationPlaceholders() {
     if (!placeholders.has(targetId)) {
       placeholders.set(targetId, {
         placeholder: controller.data,
-        container
+        elContainer
       });
     }
   }
@@ -75,8 +79,8 @@ export function createContinuationPlaceholders() {
           remember(node);
         }
 
-        for (const element of node.querySelectorAll(CONTINUATION_SELECTOR)) {
-          remember(element);
+        for (const elPlaceholder of node.querySelectorAll(CONTINUATION_SELECTOR)) {
+          remember(elPlaceholder);
         }
       }
     }
