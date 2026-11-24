@@ -1,23 +1,18 @@
 import { readPolymerController } from "@/features/live-theme/page/polymer";
 import {
   type ContinuationPlaceholders,
-  PANEL_SELECTOR
+  type PlaceholderTarget
 } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
-const PANEL_SECTION_SELECTOR = `${PANEL_SELECTOR} ytd-item-section-renderer`;
 const CONTENTS_PATH = "data.contents";
-/** The section's own signal that a response's items replaced its placeholder */
-const ITEMS_UPDATED_EVENT = "yt-next-continuation-data-updated";
-const RESPONSE_TIMEOUT_MS = 10_000;
+/** Fired on the container once YouTube's response filled it: items appended, or a slot (a grid's header) reloaded */
+const RESPONSE_APPLIED_EVENTS = ["yt-next-continuation-data-updated", "yt-reload-continuation-finish"];
 
-const isItemSection = createGuard(
+const isPlaceholderContainer = createGuard(
   z.looseObject({
-    data: z.looseObject({
-      targetId: z.string(),
-      contents: z.array(z.unknown())
-    }),
+    data: z.looseObject({ contents: z.array(z.unknown()) }),
     push: z.function({
       input: [z.string(), z.unknown()],
       output: z.unknown()
@@ -29,17 +24,19 @@ const isItemSection = createGuard(
   })
 );
 
-function waitForItems(element: Element) {
+function waitForResponse(container: Element) {
   return new Promise<void>(resolve => {
-    const timeout = setTimeout(resolve, RESPONSE_TIMEOUT_MS);
-    element.addEventListener(
-      ITEMS_UPDATED_EVENT,
-      () => {
-        clearTimeout(timeout);
-        resolve();
-      },
-      { once: true }
-    );
+    const listeners = new AbortController();
+    for (const eventName of RESPONSE_APPLIED_EVENTS) {
+      container.addEventListener(
+        eventName,
+        () => {
+          listeners.abort();
+          resolve();
+        },
+        { signal: listeners.signal }
+      );
+    }
   });
 }
 
@@ -60,41 +57,48 @@ function readScrollOffsets(element: Element) {
   return offsets;
 }
 
-async function refetchSection({ element, placeholders }: { element: Element; placeholders: ContinuationPlaceholders }) {
-  const section = readPolymerController(element);
-  if (!isItemSection(section)) {
+async function refetchContainer({ placeholder, container }: PlaceholderTarget) {
+  if (!container.isConnected) {
     return;
   }
 
-  const placeholder = placeholders.get(section.data.targetId);
-  if (!placeholder) {
+  const section = readPolymerController(container);
+  if (!isPlaceholderContainer(section)) {
     return;
   }
 
-  const scrollOffsets = readScrollOffsets(element);
-  const staleCount = section.data.contents.length;
-  const itemsArrived = waitForItems(element);
-  // Stamped, the placeholder sends its own request; the response replaces it after the stale items
-  section.push(CONTENTS_PATH, { continuationItemRenderer: placeholder });
-  await itemsArrived;
-  section.splice(CONTENTS_PATH, 0, staleCount);
-  for (const { container, scrollTop } of scrollOffsets) {
-    container.scrollTop = scrollTop;
+  const scrollOffsets = readScrollOffsets(container);
+  const staleItems = [...section.data.contents];
+  const placeholderItem = { continuationItemRenderer: placeholder };
+  const responseApplied = waitForResponse(container);
+  // Stamped, the placeholder sends its own request, whatever slot the response then fills
+  section.push(CONTENTS_PATH, placeholderItem);
+  await responseApplied;
+
+  const placeholderIndex = section.data.contents.indexOf(placeholderItem);
+  const isPlaceholderKept = placeholderIndex >= 0;
+  if (isPlaceholderKept) {
+    // The response filled another slot (a grid's header), so the items it left are still current
+    section.splice(CONTENTS_PATH, placeholderIndex, 1);
+  }
+
+  const hasStaleItemsKept = staleItems.length > 0 && section.data.contents[0] === staleItems[0];
+  if (!isPlaceholderKept && hasStaleItemsKept) {
+    // The response's items replaced the placeholder, after the stale ones
+    section.splice(CONTENTS_PATH, 0, staleItems.length);
+  }
+
+  for (const { container: scroller, scrollTop } of scrollOffsets) {
+    scroller.scrollTop = scrollTop;
   }
 }
 
 /**
  * The server bakes some content for the theme of the request - a channel's link favicons are white for dark and gray
- * for light - with no other theme's version to translate to. Each open panel section is requested again through its
- * own placeholder, as YouTube loaded it, and the new items replace the old in place
+ * for light, a sound page's byline gray is the light theme's - with no other theme's version to translate to. Each
+ * panel's content is requested again through its own placeholder, as YouTube loaded it, and the new content replaces
+ * the old in place
  */
 export async function refetchPanelSections(placeholders: ContinuationPlaceholders) {
-  await Promise.all(
-    [...document.querySelectorAll(PANEL_SECTION_SELECTOR)].map(element =>
-      refetchSection({
-        element,
-        placeholders
-      })
-    )
-  );
+  await Promise.all([...placeholders.values()].map(refetchContainer));
 }

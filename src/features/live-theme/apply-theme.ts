@@ -37,5 +37,6 @@ export async function applyTheme({
     theme,
     colorPairs
   });
-  await refetchPanelSections(placeholders);
+  // A response that never comes must not hold the switch, so this is not awaited
+  refetchPanelSections(placeholders).catch(console.error);
 }

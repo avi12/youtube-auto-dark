@@ -3,31 +3,45 @@ import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
 const CONTINUATION_SELECTOR = "ytd-continuation-item-renderer";
-const ITEM_SECTION_SELECTOR = "ytd-item-section-renderer";
-/** Dialogs and side panels: sections whose whole content one request loads, unlike a feed's next page */
-export const PANEL_SELECTOR = "ytd-engagement-panel-section-list-renderer";
+/** Dialogs and side panels: content one request loads, unlike a feed's next page */
+const PANEL_SELECTOR = "ytd-engagement-panel-section-list-renderer";
 
 const continuationItemSchema = z.looseObject({ continuationEndpoint: z.looseObject({}) });
 const isContinuationController = createGuard(z.looseObject({ data: continuationItemSchema }));
 
-const isTargetedSection = createGuard(
-  z.looseObject({
-    data: z.looseObject({ targetId: z.string() })
-  })
-);
+const isTargetedContainer = createGuard(z.looseObject({ data: z.looseObject({ targetId: z.string() }) }));
+
+export type ContinuationPlaceholder = z.infer<typeof continuationItemSchema>;
+
+/** The component a response's items land in, named by the `targetId` YouTube's response carries */
+export interface PlaceholderTarget {
+  placeholder: ContinuationPlaceholder;
+  container: Element;
+}
+
+/** The nearest component inside the panel that a continuation response can be addressed to */
+function findContainer(placeholderElement: Element) {
+  const panel = placeholderElement.closest(PANEL_SELECTOR);
+  for (let element = placeholderElement.parentElement; element && element !== panel; element = element.parentElement) {
+    if (isTargetedContainer(readPolymerController(element))) {
+      return element;
+    }
+  }
+  return undefined;
+}
 
 /**
- * A panel section loads its content through a placeholder (`continuationItemRenderer`) that YouTube's own response
- * replaces, after which nothing on the page keeps the request. Each placeholder is remembered by its section's
- * `targetId` as YouTube stamps it, so the section's content can be requested again
+ * Panel content loads through a placeholder (`continuationItemRenderer`) that YouTube's own response replaces, after
+ * which nothing on the page keeps the request. Each placeholder is remembered as YouTube stamps it, against its
+ * container's `targetId`, so the content can be requested again. The first one stays: it is the content's own
+ * request, where a later one on the same container only asks for the next page
  */
 export function createContinuationPlaceholders() {
-  const placeholders = new Map<string, z.infer<typeof continuationItemSchema>>();
+  const placeholders = new Map<string, PlaceholderTarget>();
 
   function remember(element: Element) {
-    const isInPanel = element.closest(PANEL_SELECTOR) !== null;
-    const sectionElement = element.closest(ITEM_SECTION_SELECTOR);
-    if (!isInPanel || !sectionElement) {
+    const container = findContainer(element);
+    if (!container) {
       return;
     }
 
@@ -36,12 +50,18 @@ export function createContinuationPlaceholders() {
       return;
     }
 
-    const section = readPolymerController(sectionElement);
-    if (!isTargetedSection(section)) {
+    const containerController = readPolymerController(container);
+    if (!isTargetedContainer(containerController)) {
       return;
     }
 
-    placeholders.set(section.data.targetId, controller.data);
+    const { targetId } = containerController.data;
+    if (!placeholders.has(targetId)) {
+      placeholders.set(targetId, {
+        placeholder: controller.data,
+        container
+      });
+    }
   }
 
   new MutationObserver(records => {
