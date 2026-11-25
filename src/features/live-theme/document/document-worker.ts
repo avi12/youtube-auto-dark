@@ -1,10 +1,5 @@
 import { ThemeAttribute } from "@/features/live-theme/page/document-theme";
-import {
-  ExtensionMessageType,
-  onWindowMessage,
-  sendExtensionMessage,
-  WindowMessageType
-} from "@/lib/messaging/messaging";
+import { extensionMessenger, MessageType, windowMessenger } from "@/lib/messaging/messaging";
 import { Theme } from "@/lib/theme/theme";
 import { z } from "@/lib/zod";
 
@@ -29,13 +24,13 @@ function applyDocumentTheme(theme: Theme) {
  * needs the body and YouTube's components, which exist once YouTube announces its first rendered page
  */
 export function startDocumentWorker() {
-  onWindowMessage(WindowMessageType.APPLY_DOCUMENT_THEME, ({ data }) => {
+  windowMessenger.onMessage(MessageType.APPLY_DOCUMENT_THEME, ({ data }) => {
     applyDocumentTheme(themeSchema.parse(data));
   });
   document.addEventListener(
     "yt-navigate-finish",
     () => {
-      sendExtensionMessage(ExtensionMessageType.INJECT_PAGE_SCRIPT).catch(console.error);
+      extensionMessenger.sendMessage(MessageType.INJECT_PAGE_SCRIPT).catch(console.error);
     },
     { once: true }
   );

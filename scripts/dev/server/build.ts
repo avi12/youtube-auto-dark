@@ -3,7 +3,6 @@ import { build } from "wxt";
 import { DevEnvVar } from "#dev/env-vars";
 import { type BrowserTarget, PROJECT_ROOT } from "#dev/targets/browser-target";
 
-const MANIFEST_VERSION = 3;
 const DEVELOPMENT_MODE = "development";
 
 /** A development build (unminified, import.meta.env.DEV, inline source maps) into the target's own directory */
@@ -16,7 +15,6 @@ export async function buildExtension({
     root: PROJECT_ROOT,
     browser: wxtBrowser,
     mode: DEVELOPMENT_MODE,
-    manifestVersion: MANIFEST_VERSION,
     outDirTemplate
   });
 }

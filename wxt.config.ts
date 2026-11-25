@@ -15,7 +15,11 @@ const { description, homepage, author } = z
   })
   .parse(packageJson);
 
+/** Every browser takes the same MV3 manifest, Firefox included, whose WXT default is still MV2 */
+const MANIFEST_VERSION = 3;
+
 export default defineConfig({
+  manifestVersion: MANIFEST_VERSION,
   manifest: ({ browser }) => ({
     name: "YouTube Auto Dark",
     description,
