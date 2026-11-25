@@ -9,6 +9,8 @@ import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
 const CONTENTS_PATH = "data.contents";
+/** Marks the placeholder this step pushed, so it is found again however YouTube copies the items: no page code can read or collide with a symbol key, and it never reaches a request body */
+const REFETCH_STAMP = Symbol("youtube-auto-dark.refetch");
 const placeholderItemSchema = z.looseObject({ continuationItemRenderer: continuationItemSchema });
 const pendingRefetches = new WeakMap<Element, Promise<void>>();
 const isPlaceholderContainer = createGuard(
@@ -42,6 +44,10 @@ function readScrollOffsets(elTarget: Element) {
   return offsets;
 }
 
+function isStamped(item: unknown) {
+  return typeof item === "object" && item !== null && REFETCH_STAMP in item;
+}
+
 async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget) {
   if (!elContainer.isConnected) {
     return;
@@ -54,14 +60,17 @@ async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget)
 
   const scrollOffsets = readScrollOffsets(elContainer);
   const staleItems = [...section.data.contents];
-  const placeholderItem = { continuationItemRenderer: placeholder };
+  const placeholderItem = {
+    continuationItemRenderer: placeholder,
+    [REFETCH_STAMP]: true
+  };
   const responseApplied = waitForResponse(elContainer);
   // Stamped, the placeholder sends its own request, whatever slot the response then fills. It goes first: a placeholder
   // sends it when shown, which one at the end of a long grid is not until the reader scrolls there
   section.unshift(CONTENTS_PATH, placeholderItem);
   await responseApplied;
 
-  const placeholderIndex = section.data.contents.indexOf(placeholderItem);
+  const placeholderIndex = section.data.contents.findIndex(isStamped);
   const isPlaceholderKept = placeholderIndex >= 0;
   if (isPlaceholderKept) {
     // The response filled another slot (a grid's header), so the items it left are still current
