@@ -40,7 +40,7 @@ function findContainer(elPlaceholder: Element) {
  * container's `targetId`, so the content can be requested again. The first one stays: it is the content's own
  * request, where a later one on the same container only asks for the next page
  */
-export function createContinuationPlaceholders() {
+export function createContinuationPlaceholders({ onRemember }: { onRemember: (target: PlaceholderTarget) => void }) {
   const placeholders = new Map<string, PlaceholderTarget>();
 
   function remember(elPlaceholder: Element) {
@@ -61,10 +61,12 @@ export function createContinuationPlaceholders() {
 
     const { targetId } = containerController.data;
     if (!placeholders.has(targetId)) {
-      placeholders.set(targetId, {
+      const target = {
         placeholder: controller.data,
         elContainer
-      });
+      };
+      placeholders.set(targetId, target);
+      onRemember(target);
     }
   }
 

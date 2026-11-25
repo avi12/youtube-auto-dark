@@ -3,6 +3,7 @@ import { createLateTextRepair } from "@/features/live-theme/page/attributed-text
 import { createThemeColorPairs } from "@/features/live-theme/page/attributed-text/theme-colors";
 import { readRenderedTheme } from "@/features/live-theme/page/document-theme";
 import { createContinuationPlaceholders } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
+import { learnPanelColors } from "@/features/live-theme/page/section-refetch/learn-panel-colors";
 import { isDeviceThemeChosen } from "@/features/live-theme/prefs/theme-preference";
 import { Theme } from "@/lib/theme/theme";
 
@@ -18,7 +19,14 @@ export function startLiveThemeSync() {
   const serverTheme = readRenderedTheme();
   const lateTextRepair = createLateTextRepair();
   const colorPairs = createThemeColorPairs();
-  const placeholders = createContinuationPlaceholders();
+  const placeholders = createContinuationPlaceholders({
+    onRemember(target) {
+      learnPanelColors({
+        target,
+        colorPairs
+      }).catch(console.error);
+    }
+  });
 
   async function syncTheme() {
     const theme = systemDarkQuery.matches ? Theme.DARK : Theme.LIGHT;

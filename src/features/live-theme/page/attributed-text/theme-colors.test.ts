@@ -7,6 +7,7 @@ import {
 import {
   createThemeColorPairs,
   hasBakedColor,
+  learnBakedColorPairs,
   learnThemeColorPairs,
   remapBakedColors
 } from "@/features/live-theme/page/attributed-text/theme-colors";
@@ -150,5 +151,47 @@ describe("theme colors", () => {
         theme: Theme.LIGHT
       })
     ).toBe(false);
+  });
+});
+
+describe("learnBakedColorPairs", () => {
+  const GRAY_FOR_DARK = 0xff_aa_aa_aa;
+  const GRAY_FOR_LIGHT = 0xff_60_60_60;
+  function byline(fontColor: number) {
+    const text: TextHostData = {
+      content: "221K Shorts",
+      styleRuns: [
+        {
+          startIndex: 0,
+          length: 11,
+          fontColor
+        }
+      ]
+    };
+    return text;
+  }
+
+  it("pairs the bare colors one content has in the two themes", () => {
+    const colorPairs = createThemeColorPairs();
+    learnBakedColorPairs({
+      darkText: byline(GRAY_FOR_DARK),
+      lightText: byline(GRAY_FOR_LIGHT),
+      colorPairs
+    });
+
+    expect(
+      remapBakedColors({
+        text: byline(GRAY_FOR_DARK),
+        colorPairs,
+        theme: Theme.LIGHT
+      })
+    ).toEqual(byline(GRAY_FOR_LIGHT));
+    expect(
+      remapBakedColors({
+        text: byline(GRAY_FOR_LIGHT),
+        colorPairs,
+        theme: Theme.DARK
+      })
+    ).toEqual(byline(GRAY_FOR_DARK));
   });
 });

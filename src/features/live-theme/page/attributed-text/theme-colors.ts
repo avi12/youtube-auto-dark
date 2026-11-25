@@ -68,6 +68,45 @@ export function learnThemeColorPairs({ texts, colorPairs }: { texts: TextHostDat
   }
 }
 
+/**
+ * The same content requested once per theme has the same runs in the same order, so a bare `fontColor` that differs
+ * between the two is one color's counterpart: the pairs a color map would have given, for text that has none
+ */
+export function learnBakedColorPairs({
+  darkText,
+  lightText,
+  colorPairs
+}: {
+  darkText: TextHostData;
+  lightText: TextHostData;
+  colorPairs: ThemeColorPairs;
+}) {
+  const darkRuns = collectStyleRuns(darkText);
+  const lightRuns = collectStyleRuns(lightText);
+  if (darkRuns.length !== lightRuns.length) {
+    return;
+  }
+
+  for (const [index, darkRun] of darkRuns.entries()) {
+    const darkColor = darkRun.fontColor;
+    const lightColor = lightRuns[index]?.fontColor;
+    if (darkColor === undefined || lightColor === undefined || darkColor === lightColor) {
+      continue;
+    }
+
+    addPair({
+      translation: colorPairs[Theme.LIGHT],
+      fromColor: darkColor,
+      toColor: lightColor
+    });
+    addPair({
+      translation: colorPairs[Theme.DARK],
+      fromColor: lightColor,
+      toColor: darkColor
+    });
+  }
+}
+
 /** A run with a color map is resolved by the renderer itself; only a bare, baked `fontColor` needs translating */
 function remapRun({ run, translation }: { run: StyleRun; translation: ReadonlyMap<ArgbColor, ArgbColor> }) {
   const hasColorMap = run.styleRunExtensions?.styleRunColorMapExtension !== undefined;

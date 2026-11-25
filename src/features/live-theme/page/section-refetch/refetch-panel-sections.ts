@@ -3,13 +3,11 @@ import {
   type ContinuationPlaceholders,
   type PlaceholderTarget
 } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
+import { waitForResponse } from "@/features/live-theme/page/section-refetch/response-events";
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
 const CONTENTS_PATH = "data.contents";
-/** Fired on the container once YouTube's response filled it: items appended, or a slot (a grid's header) reloaded */
-const RESPONSE_APPLIED_EVENTS = ["yt-next-continuation-data-updated", "yt-reload-continuation-finish"];
-
 const isPlaceholderContainer = createGuard(
   z.looseObject({
     data: z.looseObject({ contents: z.array(z.unknown()) }),
@@ -23,22 +21,6 @@ const isPlaceholderContainer = createGuard(
     })
   })
 );
-
-function waitForResponse(elContainer: Element) {
-  return new Promise<void>(resolve => {
-    const listeners = new AbortController();
-    for (const eventName of RESPONSE_APPLIED_EVENTS) {
-      elContainer.addEventListener(
-        eventName,
-        () => {
-          listeners.abort();
-          resolve();
-        },
-        { signal: listeners.signal }
-      );
-    }
-  });
-}
 
 /** Every scrolled container around `elTarget` with its offset, so swapping the content can't move the reader */
 function readScrollOffsets(elTarget: Element) {
