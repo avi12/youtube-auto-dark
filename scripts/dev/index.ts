@@ -2,7 +2,7 @@
  * Dev server entry. Usage:
  *   pnpm dev          - Chrome
  *   pnpm dev:firefox  - Firefox
- * Runs under tsx (Node): web-ext-run waits for the browser's debug port through Node's socket handling
+ * Runs under plain Node: web-ext-run waits for the browser's debug port through Node's socket handling
  */
 
 import "#dev/env";

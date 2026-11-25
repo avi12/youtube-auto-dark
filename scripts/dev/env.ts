@@ -1,6 +1,6 @@
 /**
  * Loads the development dotenv cascade into process.env before the dev modules read it (GECKO_ID), matching what WXT
- * builds with: WXT loads env for wxt.config.ts itself, tsx does not. process.loadEnvFile never overwrites a set var,
+ * builds with: WXT loads env for wxt.config.ts itself, a plain Node run does not. process.loadEnvFile never overwrites a set var,
  * so the most specific file loads first
  */
 

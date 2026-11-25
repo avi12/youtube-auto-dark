@@ -13,12 +13,13 @@ const browsingContextTreeSchema = z.object({
   )
 });
 
-enum BidiMethod {
-  SessionNew = "session.new",
-  SessionEnd = "session.end",
-  GetTree = "browsingContext.getTree",
-  Reload = "browsingContext.reload"
-}
+const BidiMethod = {
+  SessionNew: "session.new",
+  SessionEnd: "session.end",
+  GetTree: "browsingContext.getTree",
+  Reload: "browsingContext.reload"
+} as const;
+type BidiMethod = (typeof BidiMethod)[keyof typeof BidiMethod];
 
 /**
  * Reloads every open YouTube tab over WebDriver BiDi (Firefox's Remote Agent), so each load runs the freshly built

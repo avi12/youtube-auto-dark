@@ -1,10 +1,10 @@
 /** What a batch of saved files asks of the dev server */
-export enum ChangeKind {
+export const ChangeKind = {
   /** Build inputs outside src/ (config, dependencies, env): refresh env, rebuild, reload */
-  CONFIG = "config",
+  CONFIG: "config",
   /** Extension source: rebuild and reload, which re-injects the content script into open YouTube tabs */
-  SOURCE = "source"
-}
+  SOURCE: "source"
+} as const;
 
 const CONFIG_FILES = new Set(["wxt.config.ts", "package.json", "pnpm-lock.yaml"]);
 const ENV_FILE_PREFIX = ".env";
