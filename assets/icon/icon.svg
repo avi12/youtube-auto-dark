@@ -1,13 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <defs>
-    <clipPath id="card"><rect x="5" y="23" width="118" height="82" rx="26"/></clipPath>
-    <clipPath id="light"><path d="M0 0H92L52 128H0Z"/></clipPath>
-  </defs>
-  <g clip-path="url(#card)">
-    <rect width="128" height="128" fill="#262626"/>
-    <rect width="128" height="128" fill="#fafafa" clip-path="url(#light)"/>
-  </g>
-  <path id="play" d="M50 42V86L92 64Z" fill="#ff4e45" stroke="#ff4e45" stroke-width="8" stroke-linejoin="round"/>
-  <path d="M50 42V86L92 64Z" fill="#e00000" stroke="#e00000" stroke-width="8" stroke-linejoin="round" clip-path="url(#light)"/>
-  <rect x="5" y="23" width="118" height="82" rx="26" fill="none" stroke="#7a7a7a" stroke-width="4"/>
+  <rect y="18" width="128" height="90" rx="24" fill="#f44336"/>
+  <circle cx="64" cy="63" r="24" fill="none" stroke="#fff" stroke-width="8"/>
+  <path d="M64 43a20 20 0 0 1 0 40z" fill="#fff"/>
 </svg>
