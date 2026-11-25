@@ -1,21 +1,22 @@
 import { z } from "zod";
 
 import { LOOPBACK_HOST, type Port } from "#dev/server/ports";
-import { openWebSocketRpc } from "#dev/tab-reload/websocket-rpc";
+import {
+  emptyResultSchema,
+  openWebSocketRpc,
+  type WebSocketUrl,
+  webSocketUrlSchema
+} from "#dev/tab-reload/websocket-rpc";
 import { isYouTubeUrl } from "#dev/tab-reload/youtube-url";
 
 const pageTargetsSchema = z.array(
   z.object({
     type: z.string(),
     url: z.string(),
-    webSocketDebuggerUrl: z.string().optional()
+    webSocketDebuggerUrl: webSocketUrlSchema.optional()
   })
 );
 const PAGE_TARGET_TYPE = "page";
-
-enum CdpMethod {
-  PageReload = "Page.reload"
-}
 
 /** Reloads every open YouTube tab over the Chrome DevTools Protocol, so each load runs the freshly built content script */
 export async function reloadChromeYouTubeTabs(cdpPort: Port) {
@@ -31,12 +32,12 @@ export async function reloadChromeYouTubeTabs(cdpPort: Port) {
   await Promise.allSettled(reloads);
 }
 
-async function reloadTarget(webSocketDebuggerUrl: string) {
-  const webSocketRpc = await openWebSocketRpc<CdpMethod>(webSocketDebuggerUrl);
+async function reloadTarget(webSocketDebuggerUrl: WebSocketUrl) {
+  const webSocketRpc = await openWebSocketRpc<"Page.reload">(webSocketDebuggerUrl);
   await webSocketRpc.send({
-    method: CdpMethod.PageReload,
+    method: "Page.reload",
     params: {},
-    resultSchema: z.unknown()
+    resultSchema: emptyResultSchema
   });
   webSocketRpc.close();
 }

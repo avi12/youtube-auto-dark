@@ -11,11 +11,12 @@ import { parseEnv } from "node:util";
 const ROOT = resolve(import.meta.dirname, "..", "..");
 const ENV_FILES_MOST_SPECIFIC_FIRST = [".env.development.local", ".env.development", ".env.local", ".env"];
 
-for (const file of ENV_FILES_MOST_SPECIFIC_FIRST) {
-  const path = resolve(ROOT, file);
-  if (existsSync(path)) {
-    process.loadEnvFile(path);
-  }
+function existingEnvFiles() {
+  return ENV_FILES_MOST_SPECIFIC_FIRST.map(file => resolve(ROOT, file)).filter(path => existsSync(path));
+}
+
+for (const path of existingEnvFiles()) {
+  process.loadEnvFile(path);
 }
 
 /**
@@ -24,10 +25,7 @@ for (const file of ENV_FILES_MOST_SPECIFIC_FIRST) {
  * specific file still wins
  */
 export function reloadDevEnv() {
-  for (const file of ENV_FILES_MOST_SPECIFIC_FIRST.toReversed()) {
-    const path = resolve(ROOT, file);
-    if (existsSync(path)) {
-      Object.assign(process.env, parseEnv(readFileSync(path, "utf-8")));
-    }
+  for (const path of existingEnvFiles().toReversed()) {
+    Object.assign(process.env, parseEnv(readFileSync(path, "utf-8")));
   }
 }

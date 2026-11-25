@@ -14,13 +14,10 @@ export function watchProject({
   watchedPaths: string[];
   onChange: (changedPaths: string[]) => void;
 }) {
-  function isWatched(path: string) {
-    return watchedPaths.some(watchedPath => path === watchedPath || path.startsWith(`${watchedPath}/`));
-  }
-
   const watcher = watch(root, { recursive: true }, (_eventType, fileName) => {
     const path = fileName?.replaceAll("\\", "/");
-    if (!path || !isWatched(path)) {
+    const isWatched = watchedPaths.some(watchedPath => path === watchedPath || path?.startsWith(`${watchedPath}/`));
+    if (!path || !isWatched) {
       return;
     }
 

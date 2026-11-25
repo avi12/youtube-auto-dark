@@ -2,14 +2,21 @@ import { z } from "zod";
 
 /** CDP and WebDriver BiDi frame commands alike: `{ id, method, params }` answered by `{ id, result }` or `{ id, error }` */
 const replySchema = z.object({
-  id: z.number(),
+  id: z.int(),
   result: z.unknown().optional(),
   error: z.unknown().optional()
 });
 type Reply = z.infer<typeof replySchema>;
 
+/** Commands that return nothing worth reading */
+export const emptyResultSchema = z.looseObject({});
+
+export const webSocketUrlSchema = z.templateLiteral(["ws://", z.string()]);
+export type WebSocketUrl = z.infer<typeof webSocketUrlSchema>;
+type RpcParams = Record<string, string | number | object>;
+
 /** A minimal command channel over one WebSocket; `close` ends it */
-export async function openWebSocketRpc<TMethod extends string>(url: string) {
+export async function openWebSocketRpc<TMethod extends string>(url: WebSocketUrl) {
   const socket = new WebSocket(url);
   await new Promise((resolve, reject) => {
     socket.addEventListener("open", resolve, { once: true });
@@ -35,7 +42,7 @@ export async function openWebSocketRpc<TMethod extends string>(url: string) {
     resultSchema
   }: {
     method: TMethod;
-    params: Record<string, unknown>;
+    params: RpcParams;
     resultSchema: TResult;
   }) {
     nextId++;

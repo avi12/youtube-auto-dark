@@ -15,27 +15,25 @@ export type WebExtRunner = Awaited<ReturnType<typeof webExtRun.cmd.run>>;
  * loop (build, watch, reload) never branches on the browser
  */
 export interface BrowserTarget {
-  name: string;
+  name: "Chrome" | "Firefox";
   wxtBrowser: "chrome" | "firefox";
   /** WXT's output folder name under build/, distinct per target so two dev servers never race one directory */
-  outDirTemplate: string;
+  outDirTemplate: `${BrowserTarget["wxtBrowser"]}-mv3-development`;
   prepare?: () => void;
   setupProfile: () => string;
   /** Starts the browser and hands back how to reload its open YouTube tabs over its debugging protocol */
-  launch: (profileDirectory: string) => Promise<{
-    runner: WebExtRunner;
-    reloadYouTubeTabs: () => Promise<void>;
-  }>;
+  launch: (profileDirectory: string) => Promise<LaunchedBrowser>;
 }
 
-function outputDirectoryOf(target: Pick<BrowserTarget, "outDirTemplate">) {
-  return resolve(BUILD_DIRECTORY, target.outDirTemplate);
+export interface LaunchedBrowser {
+  runner: WebExtRunner;
+  reloadYouTubeTabs: () => Promise<void>;
 }
 
 /** The web-ext-run launch options every target shares: the built extension, YouTube open, a kept profile, no prompts */
 export function webExtRunBaseOptions(target: Pick<BrowserTarget, "outDirTemplate">) {
   return {
-    sourceDir: outputDirectoryOf(target),
+    sourceDir: resolve(BUILD_DIRECTORY, target.outDirTemplate),
     startUrl: [YOUTUBE_ORIGIN],
     keepProfileChanges: true,
     noReload: true,

@@ -5,7 +5,7 @@ import { initDevLog, logEvent } from "#dev/log";
 import { buildExtension, createSerialRunner } from "#dev/server/build";
 import { ChangeKind, planChange } from "#dev/server/change-plan";
 import { watchProject } from "#dev/server/watcher";
-import { type BrowserTarget, PROJECT_ROOT } from "#dev/targets/browser-target";
+import { type BrowserTarget, type LaunchedBrowser, PROJECT_ROOT } from "#dev/targets/browser-target";
 
 const WATCHED_PATHS = [
   "src",
@@ -28,13 +28,7 @@ function quietWebExtLogs() {
   };
 }
 
-function createChangeHandler({
-  target,
-  browser
-}: {
-  target: BrowserTarget;
-  browser: Awaited<ReturnType<BrowserTarget["launch"]>>;
-}) {
+function createChangeHandler({ target, browser }: { target: BrowserTarget; browser: LaunchedBrowser }) {
   return async (changedPaths: string[]) => {
     const changeKind = planChange(changedPaths);
     logEvent(`${changedPaths.length} file(s) changed (${changeKind}) - rebuilding`);

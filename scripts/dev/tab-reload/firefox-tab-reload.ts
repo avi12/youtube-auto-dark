@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { LOOPBACK_HOST, type Port } from "#dev/server/ports";
-import { openWebSocketRpc } from "#dev/tab-reload/websocket-rpc";
+import { emptyResultSchema, openWebSocketRpc } from "#dev/tab-reload/websocket-rpc";
 import { isYouTubeUrl } from "#dev/tab-reload/youtube-url";
 
 const browsingContextTreeSchema = z.object({
@@ -31,7 +31,7 @@ export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
     params: {
       capabilities: {}
     },
-    resultSchema: z.unknown()
+    resultSchema: emptyResultSchema
   });
   const { contexts } = await webSocketRpc.send({
     method: BidiMethod.GetTree,
@@ -49,7 +49,7 @@ export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
           params: {
             context
           },
-          resultSchema: z.unknown()
+          resultSchema: emptyResultSchema
         })
       );
     }
@@ -58,7 +58,7 @@ export async function reloadFirefoxYouTubeTabs(remotePort: Port) {
   await webSocketRpc.send({
     method: BidiMethod.SessionEnd,
     params: {},
-    resultSchema: z.unknown()
+    resultSchema: emptyResultSchema
   });
   webSocketRpc.close();
 }

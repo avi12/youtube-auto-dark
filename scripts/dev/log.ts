@@ -19,11 +19,13 @@ export const nodeErrorSchema = z.object({
   syscall: z.string().optional()
 });
 
+const LOG_LEVELS = ["log", "warn", "error"] as const;
+
 function formatArgument(argument: unknown) {
   return typeof argument === "string" ? argument : inspect(argument, { depth: INSPECT_DEPTH });
 }
 
-function appendToDevLog({ level, args }: { level: string; args: unknown[] }) {
+function appendToDevLog({ level, args }: { level: (typeof LOG_LEVELS)[number]; args: unknown[] }) {
   if (!devLogPath) {
     return;
   }
@@ -36,7 +38,7 @@ export function initDevLog(browserName: string) {
   mkdirSync(DEV_LOG_DIRECTORY, { recursive: true });
   devLogPath = join(DEV_LOG_DIRECTORY, `${browserName.toLowerCase()}.log`);
   writeFileSync(devLogPath, "");
-  for (const level of ["log", "warn", "error"] as const) {
+  for (const level of LOG_LEVELS) {
     const original = console[level].bind(console);
     console[level] = (...args: unknown[]) => {
       original(...args);

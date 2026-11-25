@@ -19,24 +19,21 @@ function isPortFree(port: Port) {
   });
 }
 
-/** The first free loopback port at or above `startPort`, so another browser's debugger never captures ours */
-async function findFreeTcpPort(startPort: Port) {
-  for (let candidate = startPort; candidate < startPort + MAX_PORT_PROBES; candidate++) {
+/**
+ * Claims the first free loopback port at or above `preferredPort`, so another browser's debugger never captures ours,
+ * logging when `label`'s preferred port was busy
+ */
+export async function claimFreePort({ preferredPort, label }: { preferredPort: Port; label: string }) {
+  for (let candidate = preferredPort; candidate < preferredPort + MAX_PORT_PROBES; candidate++) {
     const port = portSchema.parse(candidate);
     if (await isPortFree(port)) {
+      if (port !== preferredPort) {
+        logEvent(`${label} port ${preferredPort} busy - using ${port}`);
+      }
+
       return port;
     }
   }
 
-  return startPort;
-}
-
-/** Claims `preferredPort` or the next free one, logging when `label`'s preferred port was busy */
-export async function claimFreePort({ preferredPort, label }: { preferredPort: Port; label: string }) {
-  const port = await findFreeTcpPort(preferredPort);
-  if (port !== preferredPort) {
-    logEvent(`${label} port ${preferredPort} busy - using ${port}`);
-  }
-
-  return port;
+  return preferredPort;
 }

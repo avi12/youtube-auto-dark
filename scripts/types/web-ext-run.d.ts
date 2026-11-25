@@ -8,11 +8,11 @@ declare module "web-ext-run" {
   interface RunOptions {
     target: "chromium" | "firefox-desktop";
     sourceDir: string;
-    startUrl: string[];
+    startUrl: `https://${string}`[];
     keepProfileChanges: boolean;
     noReload: boolean;
     noInput: boolean;
-    args: string[];
+    args: `--${string}`[];
     chromiumProfile?: string;
     firefoxProfile?: string;
     firefox?: string;
