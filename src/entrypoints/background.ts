@@ -6,8 +6,8 @@ const PAGE_SCRIPT_PATH = "/youtube-page.js";
 
 /** Narrows the messenger's `MessageSender` to what a content script's message carries: its tab and frame */
 const isContentScriptSender = createGuard(
-  z.looseObject({
-    tab: z.looseObject({ id: z.int() }),
+  z.object({
+    tab: z.object({ id: z.int() }),
     frameId: z.int()
   })
 );
