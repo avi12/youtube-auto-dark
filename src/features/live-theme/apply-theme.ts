@@ -6,6 +6,7 @@ import { repaintColorPalettes } from "@/features/live-theme/page/color-palettes"
 import { applyDocumentTheme } from "@/features/live-theme/page/document-worker-client";
 import { rethemeLiveChat } from "@/features/live-theme/page/live-chat/retheme-live-chat";
 import { syncMasthead } from "@/features/live-theme/page/masthead";
+import { replayHover } from "@/features/live-theme/page/replay-hover";
 import { type ContinuationPlaceholders } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
 import { refetchPanelSections } from "@/features/live-theme/page/section-refetch/refetch-panel-sections";
 import { runThemeActions } from "@/features/live-theme/page/theme-toggled-action";
@@ -33,6 +34,7 @@ export async function applyTheme({
   runThemeActions(isDark);
   rethemeLiveChat(theme);
   repaintColorPalettes();
+  replayHover();
   await rethemeAttributedStrings({
     theme,
     colorPairs
