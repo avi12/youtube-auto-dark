@@ -5,11 +5,12 @@ import { waitForResponse } from "@/features/live-theme/page/section-refetch/resp
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
+const INNERTUBE_CONTEXT_KEY = "INNERTUBE_CONTEXT";
 const isYoutubeConfigHost = createGuard(
   z.looseObject({
     ytcfg: z.looseObject({
       get: z.function({
-        input: [z.string()],
+        input: [z.literal(INNERTUBE_CONTEXT_KEY)],
         output: z.unknown()
       })
     })
@@ -30,7 +31,7 @@ async function requestContent({ target, theme }: { target: PlaceholderTarget; th
     throw new TypeError("YouTube's page configuration is missing");
   }
 
-  const { client, ...context } = requestContextSchema.parse(window.ytcfg.get("INNERTUBE_CONTEXT"));
+  const { client, ...context } = requestContextSchema.parse(window.ytcfg.get(INNERTUBE_CONTEXT_KEY));
   const { token } = request.continuationEndpoint.continuationCommand;
   const response = await fetch(request.continuationEndpoint.commandMetadata.webCommandMetadata.apiUrl, {
     method: "POST",

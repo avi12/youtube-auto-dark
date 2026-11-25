@@ -12,11 +12,10 @@ import { type Theme } from "@/lib/theme/theme";
  * baked into the data; the pairs it learns on the way join `colorPairs`
  */
 export async function rethemeAttributedStrings({ theme, colorPairs }: { theme: Theme; colorPairs: ThemeColorPairs }) {
-  const elHosts = findTextHosts(document.body);
   await rerenderAttributedStrings(
     remapAttributedStrings({
       strings: readLearnedAttributedStrings({
-        elHosts,
+        elHosts: findTextHosts(document.body),
         colorPairs
       }),
       colorPairs,

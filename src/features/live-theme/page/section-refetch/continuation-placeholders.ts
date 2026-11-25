@@ -6,7 +6,7 @@ const CONTINUATION_SELECTOR = "ytd-continuation-item-renderer";
 /** Dialogs and side panels: content one request loads, unlike a feed's next page */
 const PANEL_SELECTOR = "ytd-engagement-panel-section-list-renderer";
 
-const continuationItemSchema = z.looseObject({ continuationEndpoint: z.looseObject({}) });
+export const continuationItemSchema = z.looseObject({ continuationEndpoint: z.looseObject({}) });
 const isContinuationController = createGuard(z.looseObject({ data: continuationItemSchema }));
 
 const isTargetedContainer = createGuard(z.looseObject({ data: z.looseObject({ targetId: z.string() }) }));

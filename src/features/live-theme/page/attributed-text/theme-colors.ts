@@ -23,17 +23,22 @@ export function createThemeColorPairs() {
   return colorPairs;
 }
 
-function addPair({
-  translation,
-  fromColor,
-  toColor
+/** Both directions of one pair; the first counterpart seen for a color wins */
+function learnPair({
+  darkColor,
+  lightColor,
+  colorPairs
 }: {
-  translation: Map<ArgbColor, ArgbColor>;
-  fromColor: ArgbColor;
-  toColor: ArgbColor;
+  darkColor: ArgbColor;
+  lightColor: ArgbColor;
+  colorPairs: ThemeColorPairs;
 }) {
-  if (!translation.has(fromColor)) {
-    translation.set(fromColor, toColor);
+  if (!colorPairs[Theme.LIGHT].has(darkColor)) {
+    colorPairs[Theme.LIGHT].set(darkColor, lightColor);
+  }
+
+  if (!colorPairs[Theme.DARK].has(lightColor)) {
+    colorPairs[Theme.DARK].set(lightColor, darkColor);
   }
 }
 
@@ -55,15 +60,10 @@ export function learnThemeColorPairs({ texts, colorPairs }: { texts: TextHostDat
       continue;
     }
 
-    addPair({
-      translation: colorPairs[Theme.LIGHT],
-      fromColor: darkColor,
-      toColor: lightColor
-    });
-    addPair({
-      translation: colorPairs[Theme.DARK],
-      fromColor: lightColor,
-      toColor: darkColor
+    learnPair({
+      darkColor,
+      lightColor,
+      colorPairs
     });
   }
 }
@@ -94,15 +94,10 @@ export function learnBakedColorPairs({
       continue;
     }
 
-    addPair({
-      translation: colorPairs[Theme.LIGHT],
-      fromColor: darkColor,
-      toColor: lightColor
-    });
-    addPair({
-      translation: colorPairs[Theme.DARK],
-      fromColor: lightColor,
-      toColor: darkColor
+    learnPair({
+      darkColor,
+      lightColor,
+      colorPairs
     });
   }
 }

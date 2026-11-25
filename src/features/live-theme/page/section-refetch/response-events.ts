@@ -1,5 +1,5 @@
 /** Fired on the container once YouTube's response filled it: items appended, or a slot (a grid's header) reloaded */
-const RESPONSE_APPLIED_EVENTS = ["yt-next-continuation-data-updated", "yt-reload-continuation-finish"];
+const RESPONSE_APPLIED_EVENTS = ["yt-next-continuation-data-updated", "yt-reload-continuation-finish"] as const;
 
 /** Resolves when YouTube's next response has been applied to `elContainer` */
 export function waitForResponse(elContainer: Element) {

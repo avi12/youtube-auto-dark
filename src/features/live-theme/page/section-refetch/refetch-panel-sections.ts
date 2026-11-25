@@ -1,5 +1,6 @@
 import { readPolymerController } from "@/features/live-theme/page/polymer";
 import {
+  continuationItemSchema,
   type ContinuationPlaceholders,
   type PlaceholderTarget
 } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
@@ -8,16 +9,17 @@ import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
 const CONTENTS_PATH = "data.contents";
+const placeholderItemSchema = z.looseObject({ continuationItemRenderer: continuationItemSchema });
 const pendingRefetches = new WeakMap<Element, Promise<void>>();
 const isPlaceholderContainer = createGuard(
   z.looseObject({
     data: z.looseObject({ contents: z.array(z.unknown()) }),
     unshift: z.function({
-      input: [z.string(), z.unknown()],
+      input: [z.literal(CONTENTS_PATH), placeholderItemSchema],
       output: z.unknown()
     }),
     splice: z.function({
-      input: [z.string(), z.number(), z.number()],
+      input: [z.literal(CONTENTS_PATH), z.number(), z.number()],
       output: z.unknown()
     })
   })
