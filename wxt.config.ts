@@ -34,6 +34,7 @@ export default defineConfig({
     })
   }),
   srcDir: "src",
+  publicDir: "src/public",
   outDir: "build",
   zip: {
     includeSources: [
@@ -41,7 +42,6 @@ export default defineConfig({
       "pnpm-lock.yaml",
       "pnpm-workspace.yaml",
       "patches/**",
-      "public/**",
       "assets/**",
       "README.md",
       "LICENSE",
