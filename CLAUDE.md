@@ -31,6 +31,7 @@ YouTube Auto Dark makes YouTube's own "Use device theme" setting live. When the 
 
 - Page objects (components, controllers, windows) are validated with `z.looseObject` / `z.function()` schemas turned into type guards (`@/lib/zod-guard`), then used in place: a parsed copy would lose their identity and `this`. No `z.custom`
 - Never reload anything, and never write CSS: only YouTube's own CSS (its island attributes) and its own JS
+- Messages between worlds (the page's MAIN world, the isolated world, the background) go through [`@webext-core/messaging`](https://npm.im/@webext-core/messaging), with a `ProtocolMap` interface keyed by the members of one string enum (`[MessageType.X]: (data) => result`). Nothing crosses worlds yet: the whole extension is one MAIN-world content script
 
 The rules of `../youtube-time-manager/CLAUDE.md` (Code style, Naming conventions, Hardcoded values, CSS, Storage, UI copy) and of `../youtube-semi-sub/CLAUDE.md` (zod-first, no `as` casts, `@` alias, linting gates) apply. Event handler params are `event`.
 
