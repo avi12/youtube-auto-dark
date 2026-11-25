@@ -5,7 +5,6 @@ import { YOUTUBE_MATCHES } from "./src/lib/youtube/site";
 const AUTHOR_NAME = "Avi";
 const AUTHOR_URL = "https://avi12.com";
 const REPOSITORY_URL = "https://github.com/avi12/youtube-auto-dark";
-const FIREFOX_MIN_VERSION = "140.0";
 
 export default defineConfig({
   manifest: ({ browser }) => ({
@@ -21,7 +20,6 @@ export default defineConfig({
       browser_specific_settings: {
         gecko: {
           id: process.env.GECKO_ID ?? "youtube-auto-dark@avi12.com",
-          strict_min_version: FIREFOX_MIN_VERSION,
           data_collection_permissions: {
             required: ["none"]
           }
