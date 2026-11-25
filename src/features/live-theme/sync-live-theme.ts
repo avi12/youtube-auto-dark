@@ -13,12 +13,6 @@ import { Theme } from "@/lib/theme/theme";
  * Dark or Light in YouTube's appearance menu is left alone
  */
 export function startLiveThemeSync() {
-  // Injected at document start, when there is no body and no component yet: the steps need both, and YouTube
-  // announces its first rendered page with `yt-navigate-finish`
-  document.addEventListener("yt-navigate-finish", syncLiveTheme, { once: true });
-}
-
-function syncLiveTheme() {
   const systemDarkQuery = matchMedia("(prefers-color-scheme: dark)");
   const serverTheme = readRenderedTheme();
   const lateTextRepair = createLateTextRepair();

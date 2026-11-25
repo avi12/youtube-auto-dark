@@ -1,5 +1,5 @@
 import { ThemeAttribute } from "@/features/live-theme/page/document-theme";
-import { MessageType, onMessage } from "@/lib/messaging/messaging";
+import { MessageType, onMessage, sendMessage } from "@/lib/messaging/messaging";
 import { Theme } from "@/lib/theme/theme";
 import { z } from "@/lib/zod";
 
@@ -20,7 +20,9 @@ function applyDocumentTheme(theme: Theme) {
 
 /** The isolated script: it shares the page's DOM but none of its JS, so the DOM is modified from here, on request */
 export function startDocumentWorker() {
+  onMessage(MessageType.PING, () => undefined);
   onMessage(MessageType.APPLY_DOCUMENT_THEME, ({ data }) => {
     applyDocumentTheme(themeSchema.parse(data));
   });
+  sendMessage(MessageType.DOCUMENT_WORKER_READY).catch(console.error);
 }
