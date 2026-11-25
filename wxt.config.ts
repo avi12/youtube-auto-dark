@@ -21,6 +21,12 @@ export default defineConfig({
     description,
     homepage_url: homepage,
     host_permissions: YOUTUBE_MATCHES,
+    web_accessible_resources: [
+      {
+        resources: ["youtube-page.js"],
+        matches: YOUTUBE_MATCHES
+      }
+    ],
     ...(browser === "firefox" && {
       developer: author,
       browser_specific_settings: {
