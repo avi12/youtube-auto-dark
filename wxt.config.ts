@@ -20,6 +20,7 @@ export default defineConfig({
     name: "YouTube Auto Dark",
     description,
     homepage_url: homepage,
+    permissions: ["scripting"],
     host_permissions: YOUTUBE_MATCHES,
     ...(browser === "firefox" && {
       developer: author,

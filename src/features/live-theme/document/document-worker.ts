@@ -1,5 +1,10 @@
 import { ThemeAttribute } from "@/features/live-theme/page/document-theme";
-import { MessageType, onMessage, sendMessage } from "@/lib/messaging/messaging";
+import {
+  ExtensionMessageType,
+  onWindowMessage,
+  sendExtensionMessage,
+  WindowMessageType
+} from "@/lib/messaging/messaging";
 import { Theme } from "@/lib/theme/theme";
 import { z } from "@/lib/zod";
 
@@ -18,11 +23,20 @@ function applyDocumentTheme(theme: Theme) {
   }
 }
 
-/** The isolated script: it shares the page's DOM but none of its JS, so the DOM is modified from here, on request */
+/**
+ * The isolated script: it shares the page's DOM but none of its JS, so the DOM is modified from here, on request. It
+ * listens first and then has the background run the page script, so no message can precede a handler. The page script
+ * needs the body and YouTube's components, which exist once YouTube announces its first rendered page
+ */
 export function startDocumentWorker() {
-  onMessage(MessageType.PING, () => undefined);
-  onMessage(MessageType.APPLY_DOCUMENT_THEME, ({ data }) => {
+  onWindowMessage(WindowMessageType.APPLY_DOCUMENT_THEME, ({ data }) => {
     applyDocumentTheme(themeSchema.parse(data));
   });
-  sendMessage(MessageType.DOCUMENT_WORKER_READY).catch(console.error);
+  document.addEventListener(
+    "yt-navigate-finish",
+    () => {
+      sendExtensionMessage(ExtensionMessageType.INJECT_PAGE_SCRIPT).catch(console.error);
+    },
+    { once: true }
+  );
 }
