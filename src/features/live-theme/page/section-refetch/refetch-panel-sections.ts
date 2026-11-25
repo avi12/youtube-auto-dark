@@ -13,7 +13,7 @@ const RESPONSE_APPLIED_EVENTS = ["yt-next-continuation-data-updated", "yt-reload
 const isPlaceholderContainer = createGuard(
   z.looseObject({
     data: z.looseObject({ contents: z.array(z.unknown()) }),
-    push: z.function({
+    unshift: z.function({
       input: [z.string(), z.unknown()],
       output: z.unknown()
     }),
@@ -71,8 +71,9 @@ async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget)
   const staleItems = [...section.data.contents];
   const placeholderItem = { continuationItemRenderer: placeholder };
   const responseApplied = waitForResponse(elContainer);
-  // Stamped, the placeholder sends its own request, whatever slot the response then fills
-  section.push(CONTENTS_PATH, placeholderItem);
+  // Stamped, the placeholder sends its own request, whatever slot the response then fills. It goes first: a placeholder
+  // sends it when shown, which one at the end of a long grid is not until the reader scrolls there
+  section.unshift(CONTENTS_PATH, placeholderItem);
   await responseApplied;
 
   const placeholderIndex = section.data.contents.indexOf(placeholderItem);
@@ -82,10 +83,11 @@ async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget)
     section.splice(CONTENTS_PATH, placeholderIndex, 1);
   }
 
-  const hasStaleItemsKept = staleItems.length > 0 && section.data.contents[0] === staleItems[0];
+  const staleIndex = staleItems.length > 0 ? section.data.contents.indexOf(staleItems[0]) : -1;
+  const hasStaleItemsKept = staleIndex >= 0;
   if (!isPlaceholderKept && hasStaleItemsKept) {
-    // The response's items replaced the placeholder, after the stale ones
-    section.splice(CONTENTS_PATH, 0, staleItems.length);
+    // The response's items replaced the placeholder, ahead of the stale ones
+    section.splice(CONTENTS_PATH, staleIndex, staleItems.length);
   }
 
   for (const { elContainer: elScroller, scrollTop } of scrollOffsets) {
