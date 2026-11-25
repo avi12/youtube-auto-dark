@@ -8,6 +8,7 @@ import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
 const CONTENTS_PATH = "data.contents";
+const pendingRefetches = new WeakMap<Element, Promise<void>>();
 const isPlaceholderContainer = createGuard(
   z.looseObject({
     data: z.looseObject({ contents: z.array(z.unknown()) }),
@@ -84,5 +85,13 @@ async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget)
  * the old in place
  */
 export async function refetchPanelSections(placeholders: ContinuationPlaceholders) {
-  await Promise.all([...placeholders.values()].map(refetchContainer));
+  await Promise.all(
+    [...placeholders.values()].map(target => {
+      // Two re-fetches at once on one container would each splice around the other's items, leaving the content twice
+      const previous = pendingRefetches.get(target.elContainer) ?? Promise.resolve();
+      const next = previous.then(() => refetchContainer(target));
+      pendingRefetches.set(target.elContainer, next);
+      return next;
+    })
+  );
 }
