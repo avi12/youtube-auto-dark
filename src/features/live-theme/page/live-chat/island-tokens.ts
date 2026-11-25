@@ -1,3 +1,4 @@
+import { isCssGroupingRule, isCssStyleRule } from "@/lib/dom-guards";
 import { Theme } from "@/lib/theme/theme";
 
 const CUSTOM_PROPERTY_PREFIX = "--";
@@ -26,7 +27,7 @@ function collectIslandTokens({
   tokens: Map<string, string>;
 }) {
   for (const rule of rules) {
-    if (rule instanceof CSSGroupingRule) {
+    if (isCssGroupingRule(rule)) {
       collectIslandTokens({
         rules: [...rule.cssRules],
         selector,
@@ -35,7 +36,7 @@ function collectIslandTokens({
       continue;
     }
 
-    const isIsland = rule instanceof CSSStyleRule && rule.selectorText.trim() === selector;
+    const isIsland = isCssStyleRule(rule) && rule.selectorText.trim() === selector;
     if (!isIsland) {
       continue;
     }

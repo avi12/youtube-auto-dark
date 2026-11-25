@@ -5,13 +5,14 @@ import {
   rerenderAttributedStrings
 } from "@/features/live-theme/page/attributed-text/attributed-string-host";
 import { hasBakedColor, type ThemeColorPairs } from "@/features/live-theme/page/attributed-text/theme-colors";
+import { isElement } from "@/lib/dom-guards";
 import { type Theme } from "@/lib/theme/theme";
 
 function collectAttributedStringElements(records: MutationRecord[]) {
   const elHosts = new Set<Element>();
   for (const record of records) {
     for (const elAdded of record.addedNodes) {
-      if (!(elAdded instanceof Element)) {
+      if (!isElement(elAdded)) {
         continue;
       }
 

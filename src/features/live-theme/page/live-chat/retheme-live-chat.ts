@@ -1,4 +1,5 @@
 import { readIslandTokens } from "@/features/live-theme/page/live-chat/island-tokens";
+import { isIframeElement } from "@/lib/dom-guards";
 import { type Theme } from "@/lib/theme/theme";
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
@@ -25,7 +26,7 @@ const isShadyChatWindow = createGuard(
 export function rethemeLiveChat(theme: Theme) {
   const tokens = readIslandTokens(theme);
   for (const elFrame of document.querySelectorAll(LIVE_CHAT_IFRAME_SELECTOR)) {
-    const chatWindow = elFrame instanceof HTMLIFrameElement ? elFrame.contentWindow : null;
+    const chatWindow = isIframeElement(elFrame) ? elFrame.contentWindow : null;
     if (isShadyChatWindow(chatWindow)) {
       chatWindow.ShadyCSS.styleDocument(tokens);
     }

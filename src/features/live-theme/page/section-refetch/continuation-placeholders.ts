@@ -1,4 +1,5 @@
 import { readPolymerController } from "@/features/live-theme/page/polymer";
+import { isElement } from "@/lib/dom-guards";
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
 
@@ -78,7 +79,7 @@ export function createContinuationPlaceholders({ onRemember }: { onRemember: (ta
   new MutationObserver(records => {
     for (const record of records) {
       for (const node of record.addedNodes) {
-        if (!(node instanceof Element)) {
+        if (!isElement(node)) {
           continue;
         }
 
