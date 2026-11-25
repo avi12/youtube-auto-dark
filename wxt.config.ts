@@ -44,7 +44,7 @@ export default defineConfig({
   },
   vite: () => ({
     build: {
-      sourcemap: process.env.WXT_INLINE_SOURCEMAPS ? "inline" : false
+      sourcemap: process.env.WXT_INLINE_SOURCEMAPS ? "inline" : true
     }
   })
 });
