@@ -5,7 +5,7 @@
   "description": "Makes YouTube's \"Use device theme\" switch live the moment your system goes light or dark",
   "homepage": "https://github.com/avi12/youtube-auto-dark",
   "bugs": "https://github.com/avi12/youtube-auto-dark/issues",
-  "license": "GPL-3.0-only",
+  "license": "GPL-3.0-or-later",
   "author": {
     "name": "Avi",
     "url": "https://avi12.com"
@@ -58,7 +58,6 @@
     "svelte-eslint-parser": "1.10.1",
     "tsrs": "0.25.0-ts7.1.0-beta",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3",
     "vite": "^8.3.8",
     "vitest": "^5.1.0",
     "web-ext-run": "^0.2.4",
