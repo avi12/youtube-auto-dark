@@ -1,20 +1,28 @@
 import { extensionMessenger, MessageType } from "@/lib/messaging/messaging";
+import { z } from "@/lib/zod";
+import { createGuard } from "@/lib/zod-guard";
 
 const PAGE_SCRIPT_PATH = "/youtube-page.js";
+
+/** Narrows the messenger's `MessageSender` to what a content script's message carries: its tab and frame */
+const isContentScriptSender = createGuard(
+  z.looseObject({
+    tab: z.looseObject({ id: z.int() }),
+    frameId: z.int()
+  })
+);
 
 export default defineBackground(() => {
   // Run in the page's own world by the extension API, which the page's CSP does not apply to
   extensionMessenger.onMessage(MessageType.INJECT_PAGE_SCRIPT, async ({ sender }) => {
-    // A content script's message always carries its tab and frame; the type marks them optional for other senders
-    const { tab, frameId } = sender;
-    if (tab?.id === undefined || frameId === undefined) {
+    if (!isContentScriptSender(sender)) {
       return;
     }
 
     await browser.scripting.executeScript({
       target: {
-        tabId: tab.id,
-        frameIds: [frameId]
+        tabId: sender.tab.id,
+        frameIds: [sender.frameId]
       },
       world: "MAIN",
       files: [PAGE_SCRIPT_PATH]
