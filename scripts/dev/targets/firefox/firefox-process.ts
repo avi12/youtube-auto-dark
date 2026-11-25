@@ -3,7 +3,6 @@ import { existsSync, rmSync } from "node:fs";
 import { platform } from "node:os";
 import { join } from "node:path";
 
-const KILL_TIMEOUT_MS = 10_000;
 const PROFILE_LOCK_FILES = ["parent.lock", ".parentlock", "lock"];
 const WINDOWS_PROGRAM_DIRECTORIES = ["C:/Program Files", "C:/Program Files (x86)"];
 const WINDOWS_FIREFOX_PATHS = WINDOWS_PROGRAM_DIRECTORIES.map(programDirectory =>
@@ -29,8 +28,7 @@ Get-CimInstance Win32_Process -Filter "name='firefox.exe'" |
 `;
     spawnSync("powershell", ["-NoProfile", "-NonInteractive", "-Command", "-"], {
       input: script,
-      stdio: ["pipe", "ignore", "ignore"],
-      timeout: KILL_TIMEOUT_MS
+      stdio: ["pipe", "ignore", "ignore"]
     });
   }
 

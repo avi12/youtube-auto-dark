@@ -17,7 +17,6 @@ const WATCHED_PATHS = [
   ".env.development",
   ".env.development.local"
 ];
-const SHUTDOWN_FORCE_EXIT_MS = 3000;
 const WEB_EXT_WARN_LEVEL = 40;
 
 /** web-ext-run's info logs drown the build output; warnings and up still surface */
@@ -73,7 +72,7 @@ export async function runDevServer(target: BrowserTarget) {
   const stopWatching = watchProject({
     root: PROJECT_ROOT,
     watchedPaths: WATCHED_PATHS,
-    onBatch: createSerialRunner(
+    onChange: createSerialRunner(
       createChangeHandler({
         target,
         browser
@@ -89,7 +88,6 @@ export async function runDevServer(target: BrowserTarget) {
 
     isExiting = true;
     logEvent("Shutting down");
-    setTimeout(() => process.exit(0), SHUTDOWN_FORCE_EXIT_MS).unref();
     stopWatching();
     await runner.exit().catch(error => console.error(error));
     process.exit(0);
