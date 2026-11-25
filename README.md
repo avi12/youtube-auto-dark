@@ -4,7 +4,7 @@ Makes YouTube's own "Use device theme" setting live. When your system flips betw
 `www.youtube.com` tabs re-theme in place, with no reload. If you picked Dark or Light in YouTube's appearance menu, the
 extension leaves the page alone. There is no popup and there are no settings.
 
-It collects no data and talks to no server other than YouTube itself.
+It works in Chrome, Firefox and Opera (and other Chromium browsers). It collects no data and talks to no server other than YouTube itself.
 
 ## How it works
 
@@ -21,8 +21,8 @@ Requires Node.js and [pnpm](https://pnpm.io).
 pnpm install
 pnpm dev           # Chrome, with live reload of the extension and open YouTube tabs
 pnpm dev:firefox   # Firefox
-pnpm build         # production build in build/
-pnpm zip           # store package and source archive
+pnpm build         # production build in build/ (build:firefox, build:opera for the others)
+pnpm zip           # store package and source archive (zip:firefox, zip:opera for the others)
 ```
 
 Before sending a change, `pnpm lint`, `pnpm compile`, `pnpm test` and `pnpm exec fallow dead-code --root .` must all
