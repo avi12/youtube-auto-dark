@@ -6,7 +6,10 @@
   "homepage": "https://github.com/avi12/youtube-auto-dark",
   "bugs": "https://github.com/avi12/youtube-auto-dark/issues",
   "license": "GPL-3.0-only",
-  "author": "Avi (https://avi12.com)",
+  "author": {
+    "name": "Avi",
+    "url": "https://avi12.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avi12/youtube-auto-dark.git"
