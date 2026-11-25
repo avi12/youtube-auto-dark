@@ -24,11 +24,17 @@ const isShadyChatWindow = createGuard(
  * stylesheet declares for the new theme, and restyles the chat in place
  */
 export function rethemeLiveChat(theme: Theme) {
-  const tokens = readIslandTokens(theme);
-  for (const elFrame of document.querySelectorAll(LIVE_CHAT_IFRAME_SELECTOR)) {
+  const chatWindows = [...document.querySelectorAll(LIVE_CHAT_IFRAME_SELECTOR)].flatMap(elFrame => {
     const chatWindow = isIframeElement(elFrame) ? elFrame.contentWindow : null;
-    if (isShadyChatWindow(chatWindow)) {
-      chatWindow.ShadyCSS.styleDocument(tokens);
-    }
+    return isShadyChatWindow(chatWindow) ? [chatWindow] : [];
+  });
+  // Reading the tokens walks every stylesheet's rules, which only an open chat is worth
+  if (!chatWindows.length) {
+    return;
+  }
+
+  const tokens = readIslandTokens(theme);
+  for (const chatWindow of chatWindows) {
+    chatWindow.ShadyCSS.styleDocument(tokens);
   }
 }
