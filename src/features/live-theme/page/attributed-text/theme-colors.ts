@@ -145,6 +145,16 @@ export function remapBakedColors({
   colorPairs: ThemeColorPairs;
   theme: Theme;
 }) {
+  // Most texts carry no baked color: they are handed back as they are, without a copy
+  const isColorBaked = hasBakedColor({
+    text,
+    colorPairs,
+    theme
+  });
+  if (!isColorBaked) {
+    return text;
+  }
+
   const translation = colorPairs[theme];
   return textHostDataSchema.parse(
     mapStyleRuns({

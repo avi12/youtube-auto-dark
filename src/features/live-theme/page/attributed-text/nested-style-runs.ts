@@ -28,14 +28,30 @@ export function mapStyleRuns({
   return copy;
 }
 
+function pushStyleRuns({ value, runs }: { value: unknown; runs: StyleRun[] }) {
+  if (typeof value !== "object" || value === null) {
+    return;
+  }
+
+  for (const [key, child] of Object.entries(value)) {
+    const parsedRuns = key === STYLE_RUNS_KEY ? styleRunsSchema.safeParse(child) : undefined;
+    if (parsedRuns?.success) {
+      runs.push(...parsedRuns.data);
+    } else {
+      pushStyleRuns({
+        value: child,
+        runs
+      });
+    }
+  }
+}
+
+/** Every style run at any depth, read in place: asking about the runs needs no copy */
 export function collectStyleRuns(value: TextHostData | TextHostData[]) {
   const runs: StyleRun[] = [];
-  mapStyleRuns({
+  pushStyleRuns({
     value,
-    mapRun(run) {
-      runs.push(run);
-      return run;
-    }
+    runs
   });
   return runs;
 }

@@ -44,14 +44,19 @@ export function findTextHosts(elRoot: Element) {
   }
 
   const elHosts = new Set<Element>();
+  // Runs of one text share their ancestors, so each is checked once: a walk reaching a checked one has its answer
+  const elChecked = new Set<Element>();
   for (const elColoredText of elColoredTexts) {
-    let elHost: Element | null = elColoredText;
-    while (elHost && !isSignalHost(elHost)) {
-      elHost = elHost.parentElement;
-    }
+    let elAncestor: Element | null = elColoredText;
+    while (elAncestor && !elChecked.has(elAncestor)) {
+      elChecked.add(elAncestor);
 
-    if (elHost) {
-      elHosts.add(elHost);
+      if (isSignalHost(elAncestor)) {
+        elHosts.add(elAncestor);
+        break;
+      }
+
+      elAncestor = elAncestor.parentElement;
     }
   }
   return elHosts;
