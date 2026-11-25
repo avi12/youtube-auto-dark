@@ -13,3 +13,11 @@ export const VOID_METHOD_SCHEMA = z.function({
   input: [],
   output: z.void()
 });
+
+/**
+ * A guard whose schema is built on first use. For classes that exist only in a browser (`Element`, `CSSStyleRule`): a
+ * schema built at import time would throw when WXT imports the entrypoints in Node to read their options
+ */
+export function createLazyGuard<Schema extends z.ZodType>(getSchema: () => Schema) {
+  return (value: unknown): value is z.infer<Schema> => getSchema().safeParse(value).success;
+}
