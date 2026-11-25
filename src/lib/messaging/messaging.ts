@@ -1,18 +1,18 @@
 import { defineExtensionMessaging } from "@webext-core/messaging";
 import { defineWindowMessaging } from "@webext-core/messaging/page";
 
-import type { Theme } from "@/lib/theme/theme";
+import type { ThemeChange } from "@/lib/theme/theme-change";
 
 /** Every message the extension's scripts send each other, so each name has one spelling */
 export enum MessageType {
-  /** MAIN asks the isolated script to write the theme attributes: the DOM is its to modify (window messaging) */
-  APPLY_DOCUMENT_THEME = "applyDocumentTheme",
+  /** The isolated script tells the page script of a switch it has written to the DOM (window messaging) */
+  APPLY_THEME = "applyTheme",
   /** The isolated script asks the background to run the page script in the page's own world (extension messaging) */
   INJECT_PAGE_SCRIPT = "injectPageScript"
 }
 
 interface ProtocolMap {
-  [MessageType.APPLY_DOCUMENT_THEME]: (theme: Theme) => void;
+  [MessageType.APPLY_THEME]: (change: ThemeChange) => void;
   [MessageType.INJECT_PAGE_SCRIPT]: () => void;
 }
 

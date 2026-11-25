@@ -1,10 +1,7 @@
-import { readIslandTokens } from "@/features/live-theme/page/live-chat/island-tokens";
 import { isIframeElement } from "@/lib/dom-guards";
-import { type Theme } from "@/lib/theme/theme";
+import { LIVE_CHAT_IFRAME_SELECTOR } from "@/lib/youtube/site";
 import { z } from "@/lib/zod";
 import { createGuard } from "@/lib/zod-guard";
-
-const LIVE_CHAT_IFRAME_SELECTOR = "ytd-live-chat-frame iframe";
 
 /** The ShadyCSS the chat's own app styles itself through (its `setGlobalDarkTheme` calls `styleSubtree`) */
 const isShadyChatWindow = createGuard(
@@ -23,18 +20,11 @@ const isShadyChatWindow = createGuard(
  * toggles on `yt-live-chat-set-dark-theme` recolors nothing. Its own ShadyCSS takes the token values YouTube's page
  * stylesheet declares for the new theme, and restyles the chat in place
  */
-export function rethemeLiveChat(theme: Theme) {
-  const chatWindows = [...document.querySelectorAll(LIVE_CHAT_IFRAME_SELECTOR)].flatMap(elFrame => {
+export function rethemeLiveChat(tokens: Record<string, string>) {
+  for (const elFrame of document.querySelectorAll(LIVE_CHAT_IFRAME_SELECTOR)) {
     const chatWindow = isIframeElement(elFrame) ? elFrame.contentWindow : null;
-    return isShadyChatWindow(chatWindow) ? [chatWindow] : [];
-  });
-  // Reading the tokens walks every stylesheet's rules, which only an open chat is worth
-  if (!chatWindows.length) {
-    return;
-  }
-
-  const tokens = readIslandTokens(theme);
-  for (const chatWindow of chatWindows) {
-    chatWindow.ShadyCSS.styleDocument(tokens);
+    if (isShadyChatWindow(chatWindow)) {
+      chatWindow.ShadyCSS.styleDocument(tokens);
+    }
   }
 }

@@ -1,5 +1,4 @@
-import { startLiveThemeSync } from "@/features/live-theme/sync-live-theme";
+import { startThemeListener } from "@/features/live-theme/page/start-theme-listener";
 
-// YouTube's components, their Polymer controllers and its action router only exist in the page's own world, so the
-// background injects this script there once YouTube has rendered its first page
-export default defineUnlistedScript(startLiveThemeSync);
+/** Runs in the page's own world, where YouTube's objects are. The background injects it on the isolated script's request */
+export default defineUnlistedScript(startThemeListener);
