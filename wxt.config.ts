@@ -41,6 +41,8 @@ export default defineConfig({
       "pnpm-lock.yaml",
       "pnpm-workspace.yaml",
       "patches/**",
+      "public/**",
+      "assets/**",
       "README.md",
       "LICENSE",
       "wxt.config.ts",
