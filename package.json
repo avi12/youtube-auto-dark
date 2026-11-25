@@ -38,6 +38,7 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@webext-core/messaging": "^4.0.2",
     "zod": "4.6.7"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ import { type ThemeColorPairs } from "@/features/live-theme/page/attributed-text
 import { syncCachedThemeProperties } from "@/features/live-theme/page/cached-theme-properties";
 import { syncCinematics } from "@/features/live-theme/page/cinematics";
 import { repaintColorPalettes } from "@/features/live-theme/page/color-palettes";
-import { applyDocumentTheme } from "@/features/live-theme/page/document-theme";
+import { applyDocumentTheme } from "@/features/live-theme/page/document-worker-client";
 import { rethemeLiveChat } from "@/features/live-theme/page/live-chat/retheme-live-chat";
 import { syncMasthead } from "@/features/live-theme/page/masthead";
 import { type ContinuationPlaceholders } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
@@ -26,7 +26,7 @@ export async function applyTheme({
   placeholders: ContinuationPlaceholders;
 }) {
   const isDark = theme === Theme.DARK;
-  applyDocumentTheme(theme);
+  await applyDocumentTheme(theme);
   syncCachedThemeProperties(isDark);
   syncMasthead(isDark);
   syncCinematics(isDark);
