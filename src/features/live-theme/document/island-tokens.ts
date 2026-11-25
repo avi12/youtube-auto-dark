@@ -27,13 +27,13 @@ function collectIslandTokens({
   tokens: Map<string, string>;
 }) {
   for (const rule of rules) {
+    // Not exclusive: where CSS nesting makes every style rule a grouping rule too (Firefox), it is read as both
     if (isCssGroupingRule(rule)) {
       collectIslandTokens({
         rules: [...rule.cssRules],
         selector,
         tokens
       });
-      continue;
     }
 
     const isIsland = isCssStyleRule(rule) && rule.selectorText.trim() === selector;
