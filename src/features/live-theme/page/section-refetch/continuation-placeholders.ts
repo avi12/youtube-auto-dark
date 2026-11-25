@@ -22,6 +22,11 @@ export interface PlaceholderTarget {
 /** The nearest component inside the panel that a continuation response can be addressed to */
 function findContainer(elPlaceholder: Element) {
   const panel = elPlaceholder.closest(PANEL_SELECTOR);
+  if (!panel) {
+    // A feed's own pages (a channel's Posts tab) are not panel content: re-requesting them replaces what the reader sees
+    return undefined;
+  }
+
   for (
     let elAncestor = elPlaceholder.parentElement;
     elAncestor && elAncestor !== panel;
