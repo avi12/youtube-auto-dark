@@ -13,6 +13,7 @@ const CONTENTS_PATH = "data.contents";
 const REFETCH_STAMP = Symbol("youtube-auto-dark.refetch");
 const placeholderItemSchema = z.looseObject({ continuationItemRenderer: continuationItemSchema });
 const pendingRefetches = new WeakMap<Element, Promise<void>>();
+const isStamped = createGuard(z.looseObject({ [REFETCH_STAMP]: z.literal(true) }));
 const isPlaceholderContainer = createGuard(
   z.looseObject({
     data: z.looseObject({ contents: z.array(z.unknown()) }),
@@ -42,10 +43,6 @@ function readScrollOffsets(elTarget: Element) {
     }
   }
   return offsets;
-}
-
-function isStamped(item: unknown) {
-  return typeof item === "object" && item !== null && REFETCH_STAMP in item;
 }
 
 async function refetchContainer({ placeholder, elContainer }: PlaceholderTarget) {
