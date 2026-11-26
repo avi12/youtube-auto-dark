@@ -129,6 +129,10 @@ pub(crate) async fn stop_on_profile(profile: &Path) -> Result<()> {
 mod tests {
     use crate::profile::processes::*;
 
+    const LOOKALIKE_PID: u32 = 3;
+    const SELF_PID: u32 = 4;
+    const WINDOWS_PID: u32 = 7;
+
     fn process(pid: u32, command_line: &str) -> RunningProcess {
         RunningProcess {
             pid,
@@ -141,10 +145,10 @@ mod tests {
         let processes = [
             process(1, "chrome --user-data-dir=/tmp/dev-profile --flag"),
             process(2, "chrome --user-data-dir=/home/me/.config/google-chrome"),
-            process(3, "chrome --user-data-dir=/tmp/dev-profile2"),
-            process(4, "chrome --user-data-dir=/tmp/dev-profile"),
+            process(LOOKALIKE_PID, "chrome --user-data-dir=/tmp/dev-profile2"),
+            process(SELF_PID, "chrome --user-data-dir=/tmp/dev-profile"),
         ];
-        let pids = pids_on_profile(&processes, "/tmp/dev-profile", false, 4);
+        let pids = pids_on_profile(&processes, "/tmp/dev-profile", false, SELF_PID);
         assert_eq!(pids, vec![1]);
     }
 
@@ -160,10 +164,13 @@ mod tests {
 
     #[test]
     fn windows_paths_match_regardless_of_case() {
-        let processes = [process(7, r#"chrome.exe --user-data-dir="C:\Dev\Profile""#)];
+        let processes = [process(
+            WINDOWS_PID,
+            r#"chrome.exe --user-data-dir="C:\Dev\Profile""#,
+        )];
         assert_eq!(
             pids_on_profile(&processes, r"c:\dev\profile", true, 0),
-            vec![7]
+            vec![WINDOWS_PID]
         );
         assert_eq!(
             pids_on_profile(&processes, r"c:\dev\profile", false, 0),

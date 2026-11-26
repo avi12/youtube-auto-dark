@@ -15,6 +15,9 @@ use tokio_tungstenite::tungstenite::Message;
 
 type CallLog = Arc<Mutex<Vec<String>>>;
 
+/// Longer than any client waits for the socket to close.
+const LINGER: std::time::Duration = std::time::Duration::from_secs(30);
+
 struct Fake {
     client: CdpClient,
     calls: CallLog,
@@ -57,7 +60,7 @@ async fn serve_http(mut stream: TcpStream, list: &str) {
         .unwrap();
     stream.write_all(response.as_bytes()).await.unwrap();
     // Like Chrome's DevTools server: `Connection: close` is ignored and the socket stays open.
-    tokio::time::sleep(std::time::Duration::from_secs(30)).await;
+    tokio::time::sleep(LINGER).await;
 }
 
 async fn serve_websocket(stream: TcpStream, calls: CallLog) {
