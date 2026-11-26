@@ -15,18 +15,24 @@ old theme. The step-by-step reverse-engineering notes are in [CLAUDE.md](CLAUDE.
 
 ## Development
 
-Requires Node.js and [pnpm](https://pnpm.io).
+Requires Node.js, [pnpm](https://pnpm.io) and, for the dev server, [Rust](https://rustup.rs).
 
 ```sh
 pnpm install
-pnpm dev           # Chrome, with live reload of the extension and open YouTube tabs
-pnpm dev:firefox   # Firefox
+pnpm dev           # Chrome for Testing, with live reload of the extension and open YouTube tabs
+pnpm dev:firefox   # the installed Firefox
 pnpm build         # production build in build/ (build:firefox, build:opera for the others)
 pnpm zip           # store package and source archive (zip:firefox, zip:opera for the others)
 ```
 
 Before sending a change, `pnpm lint`, `pnpm compile`, `pnpm test` and `pnpm exec fallow dead-code --root .` must all
-report no findings.
+report no findings. A change to the dev server also needs `cargo clippy --all-targets` and `cargo test` to pass in
+`dev-server/` and `tools/`.
+
+The dev server is two Rust crates: [dev-server](dev-server) (file watching, the rebuild loop and the browser
+protocols) and [tools](tools) (building, browser profiles and launching). The first `pnpm dev` downloads Chrome for
+Testing into `.chrome-for-testing/`, since branded Chrome no longer sideloads from the command line. Its profile is
+`user-profiles/chrome-for-testing`; sign in to YouTube there once if you need a signed-in session.
 
 ## License
 
@@ -37,5 +43,7 @@ License as published by the Free Software Foundation, version 3.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [LICENSE](LICENSE) file for the full text.
+
+The dev server crates are adapted from the same author's youtube-downloader (originally under Apache License 2.0).
 
 The icon's contrast glyph is from [Material Symbols](https://fonts.google.com/icons) (Apache License 2.0).
