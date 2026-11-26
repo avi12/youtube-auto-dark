@@ -18,12 +18,10 @@
   "sideEffects": [
     "**/*.css"
   ],
-  "imports": {
-    "#dev/*": "./scripts/dev/*.ts"
-  },
   "scripts": {
-    "dev": "node scripts/dev/index.ts",
-    "dev:firefox": "node scripts/dev/index.ts --firefox",
+    "dev": "pnpm devtool dev",
+    "dev:firefox": "pnpm devtool dev --firefox",
+    "devtool": "cargo run --release --quiet --manifest-path tools/Cargo.toml --",
     "build": "wxt build",
     "build:firefox": "wxt build -b firefox",
     "build:opera": "wxt build -b opera",
@@ -34,6 +32,8 @@
     "lint": "avi12-lint",
     "lint:fix": "avi12-lint --fix",
     "test": "vitest run",
+    "dev-server:test": "cargo test --manifest-path dev-server/Cargo.toml",
+    "tools:test": "cargo test --manifest-path tools/Cargo.toml",
     "fallow": "fallow audit --base HEAD",
     "postinstall": "wxt prepare"
   },
@@ -62,7 +62,6 @@
     "tsrs": "7.1.0-beta.tsrs5",
     "vite": "^8.3.8",
     "vitest": "^5.1.1",
-    "web-ext-run": "^0.2.4",
     "wxt": "^0.21.5"
   },
   "packageManager": "pnpm@11.13.1"

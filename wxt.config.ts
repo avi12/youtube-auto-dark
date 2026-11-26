@@ -53,6 +53,7 @@ export default defineConfig({
       "wxt.config.ts",
       "src/**"
     ],
+    excludeSources: ["dev-server/**", "tools/**"],
     sourcesTemplate: "{{name}}-{{version}}-{{browser}}-source.zip"
   },
   vite: () => ({

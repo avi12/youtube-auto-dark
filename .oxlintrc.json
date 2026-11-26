@@ -15,5 +15,15 @@
       }
     ]
   },
-  "ignorePatterns": ["node_modules/**", ".output/**", ".wxt/**", "build/**", "user-profiles/**", "patches/**"]
+  "ignorePatterns": [
+    "node_modules/**",
+    ".output/**",
+    ".wxt/**",
+    "build/**",
+    "user-profiles/**",
+    "patches/**",
+    "dev-server/target/**",
+    "tools/target/**",
+    ".chrome-for-testing/**"
+  ]
 }
