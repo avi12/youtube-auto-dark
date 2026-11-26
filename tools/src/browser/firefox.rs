@@ -38,15 +38,15 @@ fn find_firefox() -> Result<PathBuf> {
 }
 
 pub(crate) async fn launch(launch: Launch<'_>) -> Result<(Child, impl BrowserDriver)> {
-    let manifest = Manifest::read(launch.extension_dir)?;
+    let manifest = Manifest::read(launch.extension_directory)?;
     let gecko_id = manifest
         .gecko_id()
         .ok_or_else(|| Error::Browser("the manifest has no gecko id".to_owned()))?;
-    profile::firefox::setup(launch.profile_dir, launch.environment, gecko_id)?;
+    profile::firefox::setup(launch.profile_directory, launch.environment, gecko_id)?;
     let port = claim_port(PREFERRED_REMOTE_PORT, "Firefox Remote Agent")?;
     let mut command = Invocation::new(find_firefox()?)
         .arg("-profile")
-        .arg(launch.profile_dir)
+        .arg(launch.profile_directory)
         .args(["-no-remote", "--remote-debugging-port"])
         .arg(port.get().to_string());
     if cfg!(windows) {
@@ -55,7 +55,7 @@ pub(crate) async fn launch(launch: Launch<'_>) -> Result<(Child, impl BrowserDri
     }
     let mut child = command.spawn_kill_on_drop()?;
     wait_until_listening(&mut child, LISTENING_MARKER).await?;
-    let driver = BidiClient::new(port, launch.extension_dir.to_path_buf());
+    let driver = BidiClient::new(port, launch.extension_directory.to_path_buf());
     driver.reload_extension().await?;
     driver.open_in_first_tab(YOUTUBE_ORIGIN).await?;
     Ok((child, driver))

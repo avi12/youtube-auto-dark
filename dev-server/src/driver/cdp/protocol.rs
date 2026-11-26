@@ -19,8 +19,10 @@ pub enum Method {
 #[serde(rename_all = "camelCase")]
 pub struct EvaluateParams<'request> {
     expression: &'request str,
-    await_promise: bool,
-    return_by_value: bool,
+    #[serde(rename = "awaitPromise")]
+    is_awaiting_promise: bool,
+    #[serde(rename = "returnByValue")]
+    should_return_by_value: bool,
 }
 
 impl<'request> EvaluateParams<'request> {
@@ -28,8 +30,8 @@ impl<'request> EvaluateParams<'request> {
     pub const fn awaited(expression: &'request str) -> Self {
         Self {
             expression,
-            await_promise: true,
-            return_by_value: true,
+            is_awaiting_promise: true,
+            should_return_by_value: true,
         }
     }
 }
@@ -38,12 +40,17 @@ impl<'request> EvaluateParams<'request> {
 struct Command<'request, P> {
     id: u64,
     method: Method,
-    params: &'request P,
+    #[serde(rename = "params")]
+    parameters: &'request P,
 }
 
 /// The message text of one command.
-pub fn encode_command<P: Serialize>(id: u64, method: Method, params: &P) -> Result<String> {
-    Ok(serde_json::to_string(&Command { id, method, params })?)
+pub fn encode_command<P: Serialize>(id: u64, method: Method, parameters: &P) -> Result<String> {
+    Ok(serde_json::to_string(&Command {
+        id,
+        method,
+        parameters,
+    })?)
 }
 
 /// One message from a target: the reply to a command (`id`) or an event (no `id`).

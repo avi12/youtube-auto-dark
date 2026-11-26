@@ -27,7 +27,7 @@ struct WorkerRequest<'request> {
     root: &'request Path,
     browser: &'static str,
     mode: &'static str,
-    out_dir_template: &'static str,
+    output_directory_template: &'static str,
 }
 
 #[derive(Deserialize)]
@@ -83,7 +83,7 @@ impl WxtWorker {
             root: project_root,
             browser: browser.wxt_name(),
             mode: DEVELOPMENT_MODE,
-            out_dir_template: browser.out_dir_template(),
+            output_directory_template: browser.output_directory_template(),
         })?;
         self.stdin.write_all(line.as_bytes()).await?;
         self.stdin.write_all(b"\n").await?;

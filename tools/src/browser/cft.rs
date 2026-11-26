@@ -76,7 +76,7 @@ struct Channel {
     version: String,
 }
 
-fn build_dir(cache: &Path, platform: CftPlatform, version: &str) -> PathBuf {
+fn build_directory(cache: &Path, platform: CftPlatform, version: &str) -> PathBuf {
     cache.join(format!("{}-{version}", platform.slug()))
 }
 
@@ -167,7 +167,7 @@ pub(super) async fn ensure_chrome(project_root: &Path) -> Result<PathBuf> {
             Error::Browser("could not look up Chrome for Testing and none is cached".to_owned())
         });
     };
-    let directory = build_dir(&cache, platform, &version);
+    let directory = build_directory(&cache, platform, &version);
     let executable = directory.join(platform.executable_relative());
     if executable.is_file() {
         return Ok(executable);
@@ -200,7 +200,7 @@ mod tests {
         let platform = CftPlatform::detect();
         for version in ["148.0.1.0", "149.0.2.0"] {
             let executable =
-                build_dir(&cache, platform, version).join(platform.executable_relative());
+                build_directory(&cache, platform, version).join(platform.executable_relative());
             std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
             std::fs::write(&executable, "").unwrap();
         }

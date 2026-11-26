@@ -60,7 +60,7 @@ fn is_profile_header(line: &str) -> bool {
 }
 
 /// The `[Install...] Default=` profile Firefox actually launches, else the `Default=1` profile.
-fn default_profile_path(ini: &str, data_dir: &Path) -> Option<PathBuf> {
+fn default_profile_path(ini: &str, data_directory: &Path) -> Option<PathBuf> {
     let mut is_install_section = false;
     let mut profiles: Vec<IniProfile> = Vec::new();
     for line in ini.lines().map(str::trim) {
@@ -72,7 +72,7 @@ fn default_profile_path(ini: &str, data_dir: &Path) -> Option<PathBuf> {
             continue;
         }
         if let Some(value) = line.strip_prefix("Default=").filter(|_| is_install_section) {
-            return Some(data_dir.join(value.trim()));
+            return Some(data_directory.join(value.trim()));
         }
         let Some(profile) = profiles.last_mut().filter(|_| !is_install_section) else {
             continue;
@@ -87,7 +87,7 @@ fn default_profile_path(ini: &str, data_dir: &Path) -> Option<PathBuf> {
     let default = profiles.into_iter().find(|profile| profile.is_default)?;
     let path = PathBuf::from(default.path?);
     Some(if default.is_relative {
-        data_dir.join(path)
+        data_directory.join(path)
     } else {
         path
     })

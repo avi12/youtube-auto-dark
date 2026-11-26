@@ -33,8 +33,8 @@ const REBUILD_DEBOUNCE: Duration = Duration::from_millis(50);
 #[derive(Debug, Args)]
 pub(crate) struct DevArgs {
     /// Develop in Firefox instead of Chrome.
-    #[arg(long)]
-    firefox: bool,
+    #[arg(long = "firefox")]
+    is_firefox: bool,
     /// The extension project.
     #[arg(long, default_value = ".")]
     project_root: PathBuf,
@@ -80,7 +80,7 @@ impl Session {
 }
 
 pub(crate) async fn run(args: DevArgs) -> Result<()> {
-    let browser = if args.firefox {
+    let browser = if args.is_firefox {
         Browser::Firefox
     } else {
         Browser::Chrome
@@ -89,8 +89,8 @@ pub(crate) async fn run(args: DevArgs) -> Result<()> {
     install_log_layer()?;
 
     let environment = Environment::read(&project_root);
-    let profile_dir = profile::directory(&project_root, browser);
-    profile::stop_leftover_instances(&profile_dir).await?;
+    let profile_directory = profile::directory(&project_root, browser);
+    profile::stop_leftover_instances(&profile_directory).await?;
 
     log_event(&format!(
         "Building for {} (development, inline source maps)",
@@ -102,11 +102,11 @@ pub(crate) async fn run(args: DevArgs) -> Result<()> {
     let mut builder = WxtBuilder::new(project_root.clone(), browser);
     builder.build_with_lock_retry().await?;
 
-    let extension_dir = browser.output_dir(&project_root);
+    let extension_directory = browser.output_directory(&project_root);
     let launch = Launch {
         project_root: &project_root,
-        profile_dir: &profile_dir,
-        extension_dir: &extension_dir,
+        profile_directory: &profile_directory,
+        extension_directory: &extension_directory,
         environment: &environment,
     };
     let session = Session {

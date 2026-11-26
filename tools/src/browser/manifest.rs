@@ -23,8 +23,8 @@ struct Gecko {
 }
 
 impl Manifest {
-    pub(super) fn read(extension_dir: &Path) -> Result<Self> {
-        let text = std::fs::read_to_string(extension_dir.join("manifest.json"))?;
+    pub(super) fn read(extension_directory: &Path) -> Result<Self> {
+        let text = std::fs::read_to_string(extension_directory.join("manifest.json"))?;
         Ok(serde_json::from_str(&text)?)
     }
 

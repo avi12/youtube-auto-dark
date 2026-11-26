@@ -39,7 +39,8 @@ enum Method {
 struct Command {
     id: u64,
     method: Method,
-    params: Value,
+    #[serde(rename = "params")]
+    parameters: Value,
 }
 
 /// A reply (`id`) or an event (no `id`).
@@ -90,10 +91,14 @@ impl Session {
         self.socket.close(None).await.ok();
     }
 
-    async fn call(&mut self, method: Method, params: Value) -> Result<Value> {
+    async fn call(&mut self, method: Method, parameters: Value) -> Result<Value> {
         let id = self.next_id;
         self.next_id += 1;
-        let payload = serde_json::to_string(&Command { id, method, params })?;
+        let payload = serde_json::to_string(&Command {
+            id,
+            method,
+            parameters,
+        })?;
         within(
             REPLY_TIMEOUT,
             "sending a BiDi command",
@@ -132,8 +137,8 @@ impl Session {
             if !tab.url.starts_with(YOUTUBE_ORIGIN) {
                 continue;
             }
-            let params = json!({ "context": tab.context });
-            match self.call(Method::Reload, params).await {
+            let parameters = json!({ "context": tab.context });
+            match self.call(Method::Reload, parameters).await {
                 Ok(_) => reloaded += 1,
                 Err(error) => tracing::warn!("BiDi reload skipped: {error}"),
             }
@@ -145,8 +150,8 @@ impl Session {
         let Some(tab) = self.tabs().await?.into_iter().next() else {
             return Err(Error::Protocol("Firefox has no open tab".to_owned()));
         };
-        let params = json!({ "context": tab.context, "url": url });
-        self.call(Method::Navigate, params).await.map(drop)
+        let parameters = json!({ "context": tab.context, "url": url });
+        self.call(Method::Navigate, parameters).await.map(drop)
     }
 }
 
@@ -154,15 +159,15 @@ impl Session {
 #[derive(Debug, Clone)]
 pub struct BidiClient {
     port: Port,
-    extension_dir: PathBuf,
+    extension_directory: PathBuf,
 }
 
 impl BidiClient {
-    /// A client for the Firefox on `port` that installs the extension built in `extension_dir`.
-    pub const fn new(port: Port, extension_dir: PathBuf) -> Self {
+    /// A client for the Firefox on `port` that installs the extension built in `extension_directory`.
+    pub const fn new(port: Port, extension_directory: PathBuf) -> Self {
         Self {
             port,
-            extension_dir,
+            extension_directory,
         }
     }
 
@@ -179,10 +184,10 @@ impl BrowserDriver for BidiClient {
     /// Installs the directory as a temporary add-on; installing it again reloads it.
     async fn reload_extension(&self) -> Result<()> {
         let mut session = Session::start(self.port).await?;
-        let params = json!({
-            "extensionData": { "type": "path", "path": self.extension_dir },
+        let parameters = json!({
+            "extensionData": { "type": "path", "path": self.extension_directory },
         });
-        let outcome = session.call(Method::Install, params).await;
+        let outcome = session.call(Method::Install, parameters).await;
         session.end().await;
         outcome.map(drop)
     }

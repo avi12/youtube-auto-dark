@@ -45,10 +45,10 @@ impl Session {
         self.socket.close(None).await.ok();
     }
 
-    async fn call<P: Serialize + Sync>(&mut self, method: Method, params: &P) -> Result<Value> {
+    async fn call<P: Serialize + Sync>(&mut self, method: Method, parameters: &P) -> Result<Value> {
         let id = self.next_id;
         self.next_id += 1;
-        let payload = encode_command(id, method, params)?;
+        let payload = encode_command(id, method, parameters)?;
         within(
             REPLY_TIMEOUT,
             "sending a CDP command",
@@ -78,8 +78,8 @@ impl Session {
     /// Runs `expression` (awaited, by value) in the target at `url`; a thrown exception is an error.
     pub(super) async fn evaluate(url: &str, expression: &str) -> Result<()> {
         let mut session = Self::open(url).await?;
-        let params = EvaluateParams::awaited(expression);
-        let outcome = session.call(Method::RuntimeEvaluate, &params).await;
+        let parameters = EvaluateParams::awaited(expression);
+        let outcome = session.call(Method::RuntimeEvaluate, &parameters).await;
         session.close().await;
         let Outcome { exception_details } = serde_json::from_value(outcome?)?;
         if let Some(details) = exception_details {
