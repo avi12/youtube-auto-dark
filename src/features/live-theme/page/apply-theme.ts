@@ -1,10 +1,10 @@
 import { rethemeAttributedStrings } from "@/features/live-theme/page/attributed-text/rerender-attributed-strings";
 import { type ThemeColorPairs } from "@/features/live-theme/page/attributed-text/theme-colors";
-import { syncCachedThemeProperties } from "@/features/live-theme/page/cached-theme-properties";
-import { syncCinematics } from "@/features/live-theme/page/cinematics";
-import { repaintColorPalettes } from "@/features/live-theme/page/color-palettes";
-import { syncMasthead } from "@/features/live-theme/page/masthead";
-import { rethemeLiveChat } from "@/features/live-theme/page/retheme-live-chat";
+import { syncCachedThemeProperties } from "@/features/live-theme/page/components/cached-theme-properties";
+import { syncCinematics } from "@/features/live-theme/page/components/cinematics";
+import { repaintColorPalettes } from "@/features/live-theme/page/components/color-palettes";
+import { rethemeLiveChat } from "@/features/live-theme/page/components/live-chat";
+import { syncMasthead } from "@/features/live-theme/page/components/masthead";
 import { type ContinuationPlaceholders } from "@/features/live-theme/page/section-refetch/continuation-placeholders";
 import { refetchPanelSections } from "@/features/live-theme/page/section-refetch/refetch-panel-sections";
 import { runThemeActions } from "@/features/live-theme/page/theme-toggled-action";
