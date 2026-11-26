@@ -31,7 +31,7 @@ futures-util = { version = "0.3.34", default-features = false, features = ["allo
 # Paused clocks for deterministic timer tests
 tokio = { version = "1", features = ["test-util"] }
 
-# avi12-lint:begin rust-config (generated from rust-config-avi12; edit avi12-rust.local.toml)
+# avi12-lint:begin rust-config (generated from lint-config rust-config; edit avi12-rust.local.toml)
 [lints.rust]
 # warnings-are-errors, no-suppression, naming-case, no-unused, no-dead-code
 unsafe_code = "forbid"

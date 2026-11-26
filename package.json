@@ -19,8 +19,8 @@
     "**/*.css"
   ],
   "scripts": {
-    "dev": "pnpm devtool dev",
-    "dev:firefox": "pnpm devtool dev --firefox",
+    "dev": "bun run devtool dev",
+    "dev:firefox": "bun run devtool dev --firefox",
     "devtool": "cargo run --release --quiet --manifest-path tools/Cargo.toml --",
     "build": "wxt build",
     "build:firefox": "wxt build -b firefox",
@@ -42,27 +42,30 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@ast-grep/cli": "^0.51.0",
     "@types/node": "^26.6.10",
-    "avi12-lint": "github:avi12/lint-config#v0.11.0&path:/packages/avi12-lint",
     "eslint": "^10.15.0",
-    "eslint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/eslint-config",
     "eslint-plugin-svelte": "3.24.1",
     "fallow": "3.48.0",
-    "fallow-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/fallow-config",
+    "lint-config": "github:avi12/lint-config#v0.12.0",
     "oxfmt": "^0.80.0",
-    "oxfmt-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/oxfmt-config",
     "oxlint": "1.95.0",
-    "oxlint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/oxlint-config",
-    "oxlint-plugin-naming": "github:avi12/lint-config#v0.11.0&path:/packages/oxlint-plugin-naming",
     "postcss": "^8.5.33",
     "postcss-html": "^2.0.1",
     "stylelint": "^18.1.0",
-    "stylelint-config-avi12": "github:avi12/lint-config#v0.11.0&path:/packages/stylelint-config",
     "svelte-eslint-parser": "1.12.0",
     "tsrs": "7.1.0-beta.tsrs5",
     "vite": "^8.3.8",
     "vitest": "^5.1.1",
     "wxt": "^0.21.5"
   },
-  "packageManager": "pnpm@11.13.1"
+  "packageManager": "bun@1.4.5",
+  "patchedDependencies": {
+    "zod@4.6.7": "patches/zod.patch"
+  },
+  "trustedDependencies": [
+    "@ast-grep/cli",
+    "esbuild",
+    "spawn-sync"
+  ]
 }
