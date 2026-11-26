@@ -15,22 +15,22 @@ old theme. The step-by-step reverse-engineering notes are in [CLAUDE.md](CLAUDE.
 
 ## Development
 
-Requires Node.js, [pnpm](https://pnpm.io) and, for the dev server, [Rust](https://rustup.rs).
+Requires Node.js, [Bun](https://bun.com) 1.4.5 and, for the dev server, [Rust](https://rustup.rs).
 
 ```sh
-pnpm install
-pnpm dev           # Chrome for Testing, with live reload of the extension and open YouTube tabs
-pnpm dev:firefox   # the installed Firefox
-pnpm build         # production build in build/ (build:firefox, build:opera for the others)
-pnpm zip           # store package and source archive (zip:firefox, zip:opera for the others)
+bun install
+bun run dev           # Chrome for Testing, with live reload of the extension and open YouTube tabs
+bun run dev:firefox   # the installed Firefox
+bun run build         # production build in build/ (build:firefox, build:opera for the others)
+bun run zip           # store package and source archive (zip:firefox, zip:opera for the others)
 ```
 
-Before sending a change, `pnpm lint`, `pnpm compile`, `pnpm test` and `pnpm exec fallow dead-code --root .` must all
+Before sending a change, `bun run lint`, `bun run compile`, `bun run test` and `bunx fallow dead-code --root .` must all
 report no findings. A change to the dev server also needs `cargo clippy --all-targets` and `cargo test` to pass in
 `dev-server/` and `tools/`.
 
 The dev server is two Rust crates: [dev-server](dev-server) (file watching, the rebuild loop and the browser
-protocols) and [tools](tools) (building, browser profiles and launching). The first `pnpm dev` downloads Chrome for
+protocols) and [tools](tools) (building, browser profiles and launching). The first `bun run dev` downloads Chrome for
 Testing into `.chrome-for-testing/`, since branded Chrome no longer sideloads from the command line. Its profile is
 `user-profiles/chrome-for-testing`; sign in to YouTube there once if you need a signed-in session.
 
