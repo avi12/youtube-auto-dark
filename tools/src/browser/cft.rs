@@ -186,7 +186,7 @@ pub(super) async fn ensure_chrome(project_root: &Path) -> Result<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::browser::cft::*;
 
     #[test]
     fn versions_compare_numerically() {

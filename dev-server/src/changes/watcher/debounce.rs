@@ -6,7 +6,7 @@ use tokio::sync::mpsc;
 use tokio::time::{interval, sleep_until, Instant, MissedTickBehavior};
 use tokio_util::sync::CancellationToken;
 
-use super::{ChangeBatch, ChangeEvent};
+use crate::changes::watcher::{ChangeBatch, ChangeEvent};
 
 /// A batch waits at most this many windows, however steadily events keep arriving.
 const MAX_WAIT_WINDOWS: u32 = 10;
@@ -127,7 +127,7 @@ pub(super) async fn run_loop(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::changes::watcher::debounce::*;
     use crate::changes::watcher::ChangeKind;
     use crate::types::RelPath;
 

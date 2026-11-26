@@ -5,9 +5,9 @@ use std::path::{Path, PathBuf};
 
 use serde_json::{json, Map, Value};
 
-use super::{clone_files, Environment};
 use crate::error::Result;
 use crate::launcher::log_event;
+use crate::profile::{clone_files, Environment};
 
 pub(crate) const CHROME_PROFILE_NAME: &str = "Default";
 const SEEDED_SENTINEL: &str = ".seeded";
@@ -84,7 +84,7 @@ pub(crate) fn setup(profile: &Path, environment: &Environment) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::profile::chrome::*;
 
     #[test]
     fn developer_mode_is_added_without_losing_preferences() {

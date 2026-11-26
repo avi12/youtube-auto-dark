@@ -4,10 +4,10 @@ use dev_hot::driver::cdp::CdpClient;
 use dev_hot::driver::{BrowserDriver, YOUTUBE_ORIGIN};
 use tokio::process::Child;
 
-use super::cft::ensure_chrome;
-use super::manifest::Manifest;
-use super::startup::{claim_port, wait_until_listening};
-use super::Launch;
+use crate::browser::cft::ensure_chrome;
+use crate::browser::manifest::Manifest;
+use crate::browser::startup::{claim_port, wait_until_listening};
+use crate::browser::Launch;
 use crate::error::Result;
 use crate::process::Invocation;
 use crate::profile::{self, CHROME_PROFILE_NAME};

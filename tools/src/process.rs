@@ -117,7 +117,7 @@ impl Invocation {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::process::*;
 
     #[test]
     fn command_line_joins_program_and_arguments() {

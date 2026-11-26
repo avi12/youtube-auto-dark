@@ -37,7 +37,7 @@ impl Manifest {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::browser::manifest::*;
 
     #[test]
     fn the_gecko_id_is_only_present_in_firefox_manifests() -> Result<()> {

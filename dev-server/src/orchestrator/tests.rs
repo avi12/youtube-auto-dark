@@ -1,9 +1,9 @@
 use std::future::{ready, Future};
 use std::sync::{Arc, Mutex, PoisonError};
 
-use super::*;
 use crate::changes::watcher::{ChangeEvent, ChangeKind};
 use crate::error::Error;
+use crate::orchestrator::*;
 use crate::types::RelPath;
 
 #[derive(Debug, Clone, Default)]

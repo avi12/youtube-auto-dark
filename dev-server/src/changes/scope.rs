@@ -33,7 +33,7 @@ impl BuildScope {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::changes::scope::*;
     use crate::changes::watcher::{ChangeEvent, ChangeKind};
     use crate::types::RelPath;
 

@@ -61,7 +61,7 @@ pub struct Incoming {
 mod tests {
     use serde_json::json;
 
-    use super::*;
+    use crate::driver::cdp::protocol::*;
 
     #[test]
     fn commands_keep_their_wire_shape() -> Result<()> {

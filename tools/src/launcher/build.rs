@@ -7,9 +7,9 @@ use dev_hot::changes::scope::BuildScope;
 use dev_hot::orchestrator::Builder;
 use tokio::time::sleep;
 
-use super::wxt_worker::WxtWorker;
 use crate::browser::Browser;
 use crate::error::{Error, Result};
+use crate::launcher::wxt_worker::WxtWorker;
 
 /// Windows briefly locks files another process (a scanner, the browser) has just touched.
 const TRANSIENT_LOCK_MARKERS: [&str; 2] = ["EPERM", "EBUSY"];

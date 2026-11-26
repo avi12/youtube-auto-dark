@@ -6,9 +6,9 @@ use std::path::{Path, PathBuf};
 
 use serde_json::{json, Value};
 
-use super::{clone_files, Environment};
 use crate::error::Result;
 use crate::launcher::log_event;
+use crate::profile::{clone_files, Environment};
 
 const PROFILES_INI: &str = "profiles.ini";
 const PROFILE_LOCK_FILES: [&str; 3] = ["parent.lock", ".parentlock", "lock"];
@@ -150,7 +150,7 @@ pub(crate) fn setup(profile: &Path, environment: &Environment, gecko_id: &str) -
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::profile::firefox::*;
 
     #[test]
     fn theme_pins_are_stripped() {

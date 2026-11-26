@@ -104,7 +104,7 @@ fn is_locked(error: &std::io::Error) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::profile::*;
 
     #[test]
     fn only_existing_files_are_cloned() -> Result<()> {
