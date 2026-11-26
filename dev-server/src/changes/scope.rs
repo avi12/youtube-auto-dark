@@ -55,7 +55,7 @@ mod tests {
             BuildScope::for_batch(&batch(&["src/a.ts"])),
             BuildScope::Source
         );
-        for path in ["wxt.config.ts", "pnpm-lock.yaml", ".env.local", "srcx/a"] {
+        for path in ["wxt.config.ts", "bun.lock", ".env.local", "srcx/a"] {
             assert_eq!(
                 BuildScope::for_batch(&batch(&["src/a.ts", path])),
                 BuildScope::Project

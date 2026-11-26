@@ -44,8 +44,7 @@ export default defineConfig({
   zip: {
     includeSources: [
       "package.json",
-      "pnpm-lock.yaml",
-      "pnpm-workspace.yaml",
+      "bun.lock",
       "patches/**",
       "assets/**",
       "README.md",

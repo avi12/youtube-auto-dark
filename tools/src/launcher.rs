@@ -26,7 +26,7 @@ use crate::error::Result;
 use crate::profile::{self, Environment};
 
 /// Build inputs besides the source and the env files.
-const WATCHED_CONFIG_FILES: [&str; 3] = ["wxt.config.ts", "package.json", "pnpm-lock.yaml"];
+const WATCHED_CONFIG_FILES: [&str; 3] = ["wxt.config.ts", "package.json", "bun.lock"];
 const WATCH_POLL_INTERVAL: Duration = Duration::from_millis(500);
 const REBUILD_DEBOUNCE: Duration = Duration::from_millis(50);
 
