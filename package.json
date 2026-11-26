@@ -47,7 +47,7 @@
     "eslint": "^10.15.0",
     "eslint-plugin-svelte": "3.24.1",
     "fallow": "3.48.0",
-    "lint-config": "github:avi12/lint-config#v0.13.0",
+    "lint-config": "github:avi12/lint-config#v0.13.1",
     "oxfmt": "^0.80.0",
     "oxlint": "1.95.0",
     "postcss": "^8.5.33",
