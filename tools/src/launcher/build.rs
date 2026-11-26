@@ -67,7 +67,8 @@ impl WxtBuilder {
 
 impl Builder for WxtBuilder {
     async fn build(&mut self, scope: BuildScope) -> dev_hot::Result<()> {
-        if scope == BuildScope::Project {
+        let is_project_build = scope == BuildScope::Project;
+        if is_project_build {
             self.worker = None;
         }
         self.build_with_lock_retry()

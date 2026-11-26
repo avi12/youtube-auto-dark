@@ -58,7 +58,8 @@ fn with_developer_mode(stored: &str) -> Value {
 pub(crate) fn setup(profile: &Path, environment: &Environment) -> Result<()> {
     let sentinel = profile.join(SEEDED_SENTINEL);
     let source = user_data_directory(environment);
-    if !sentinel.exists() && source.is_dir() {
+    let should_seed = !sentinel.exists() && source.is_dir();
+    if should_seed {
         log_event(&format!(
             "Seeding the dev Chrome profile from {}",
             source.display()

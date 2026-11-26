@@ -24,7 +24,8 @@ pub(super) fn claim_port(preferred: u16, label: &str) -> Result<Port> {
     let port = (preferred..preferred.saturating_add(MAX_PORT_PROBES))
         .find(|candidate| is_port_free(*candidate))
         .ok_or_else(|| Error::Browser(format!("no free {label} port from {preferred}")))?;
-    if port != preferred {
+    let is_preferred_busy = port != preferred;
+    if is_preferred_busy {
         log_event(&format!("{label} port {preferred} busy - using {port}"));
     }
     Ok(Port::new(port)?)
@@ -34,7 +35,9 @@ async fn read_until_marker(reader: &mut BufReader<ChildStderr>, marker: &str) ->
     let mut line = Vec::new();
     loop {
         line.clear();
-        if reader.read_until(b'\n', &mut line).await? == 0 {
+        let read = reader.read_until(b'\n', &mut line).await?;
+        let is_end_of_stream = read == 0;
+        if is_end_of_stream {
             return Err(Error::Browser(
                 "it exited before its debug port opened".to_owned(),
             ));

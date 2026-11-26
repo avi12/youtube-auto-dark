@@ -33,7 +33,8 @@ struct FakeBuilder {
 impl Builder for FakeBuilder {
     fn build(&mut self, scope: BuildScope) -> impl Future<Output = Result<()>> + Send {
         self.log.push(format!("build {scope:?}"));
-        if self.failures_left > 0 {
+        let should_fail = self.failures_left > 0;
+        if should_fail {
             self.failures_left -= 1;
             return ready(Err(Error::Host {
                 message: "broken".to_owned(),
