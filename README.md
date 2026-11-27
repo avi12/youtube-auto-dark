@@ -6,6 +6,12 @@ extension leaves the page alone. There is no popup and there are no settings.
 
 ![YouTube home page, light on the left half and dark on the right](assets/screenshots/light-dark.png)
 
+Available for:
+
+- [Google Chrome](https://chromewebstore.google.com/detail/aliblljfghfdbkhcadhkiicobahenkhi) ![Chrome Web Store](https://img.shields.io/chrome-web-store/users/aliblljfghfdbkhcadhkiicobahenkhi?color=white&label=users&style=flat-square)
+- [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/youtube-auto-dark@avi12.com) ![Mozilla Add-on](https://img.shields.io/amo/users/youtube-auto-dark@avi12.com?color=white&label=users&style=flat-square)
+- [Opera](https://addons.opera.com/extensions/details/app_id/nlmmiciphachkfpddahncdlpkoldbcak) ![Opera Add-ons](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Faddons.opera.com%2Fextensions%2Fdetails%2Fapp_id%2Fnlmmiciphachkfpddahncdlpkoldbcak%2F&search=Downloads%3C%2Fdt%3E%3Cdd%3E%28%5B0-9%2C%5D%2B%29%3C%2Fdd%3E&replace=%241&color=white&label=users&style=flat-square)
+
 It works in Chrome, Firefox and Opera (and other Chromium browsers). It collects no data and talks to no server other than YouTube itself.
 
 ## How it works
