@@ -4,6 +4,8 @@ Makes YouTube's own "Use device theme" setting live. When your system flips betw
 `www.youtube.com` tabs re-theme in place, with no reload. If you picked Dark or Light in YouTube's appearance menu, the
 extension leaves the page alone. There is no popup and there are no settings.
 
+![YouTube home page, light on the left half and dark on the right](assets/screenshots/light-dark.png)
+
 It works in Chrome, Firefox and Opera (and other Chromium browsers). It collects no data and talks to no server other than YouTube itself.
 
 ## How it works
