@@ -1,4 +1,4 @@
-// Keeps WXT loaded between dev rebuilds: a cold build spends about two seconds starting Node and
+// Keeps WXT loaded between dev rebuilds: a cold build spends about two seconds starting the runtime and
 // loading WXT and Vite before it bundles anything. One JSON build config arrives per stdin line, and
 // one result line goes back. WXT writes its progress to stdout, so that is rerouted to stderr and the
 // result lines use the saved original.

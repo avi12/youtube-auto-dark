@@ -65,7 +65,6 @@
     "zod@4.6.7": "patches/zod.patch"
   },
   "trustedDependencies": [
-    "@ast-grep/cli",
     "esbuild",
     "spawn-sync"
   ]

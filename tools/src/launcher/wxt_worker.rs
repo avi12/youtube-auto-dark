@@ -1,4 +1,4 @@
-//! The warm Node process that runs `wxt`'s `build()`, so a rebuild skips the cold start.
+//! The warm Bun process that runs `wxt`'s `build()`, so a rebuild skips the cold start.
 
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
@@ -15,7 +15,7 @@ const WORKER_SOURCE: &str = include_str!("../../assets/wxt-build-worker.mjs");
 const WORKER_FILE: &str = "wxt-build-worker.mjs";
 /// Inside `node_modules`, so the script's `import "wxt"` resolves.
 const WORKER_DIRECTORY: &str = "node_modules/.cache/dev-server";
-const NODE_COMMAND: &str = "node";
+const BUN_COMMAND: &str = "bun";
 const DEVELOPMENT_MODE: &str = "development";
 /// Read by `wxt.config.ts`: inline source maps, which the browser's debugger can always load.
 const INLINE_SOURCEMAPS_VARIABLE: &str = "WXT_INLINE_SOURCEMAPS";
@@ -55,7 +55,7 @@ async fn ensure_script(project_root: &Path) -> Result<PathBuf> {
 impl WxtWorker {
     pub(super) async fn spawn(project_root: &Path) -> Result<Self> {
         let script = ensure_script(project_root).await?;
-        let mut process = Command::new(NODE_COMMAND)
+        let mut process = Command::new(BUN_COMMAND)
             .arg(&script)
             .current_dir(project_root)
             .env(INLINE_SOURCEMAPS_VARIABLE, "1")

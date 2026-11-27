@@ -45,6 +45,7 @@ export default defineConfig({
     includeSources: [
       "package.json",
       "bun.lock",
+      "bunfig.toml",
       "patches/**",
       "assets/**",
       "README.md",

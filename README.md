@@ -23,7 +23,7 @@ old theme. The step-by-step reverse-engineering notes are in [CLAUDE.md](CLAUDE.
 
 ## Development
 
-Requires Node.js, [Bun](https://bun.com) 1.4.5 and, for the dev server, [Rust](https://rustup.rs).
+Requires [Bun](https://bun.com) 1.4.5 and, for the dev server, [Rust](https://rustup.rs).
 
 ```sh
 bun install

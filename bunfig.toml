@@ -1,2 +1,6 @@
 [install]
 minimumReleaseAge = 86400
+
+[run]
+# Tools with a Node shebang (wxt, vitest, oxlint) run on Bun, so Node is not needed
+bun = true

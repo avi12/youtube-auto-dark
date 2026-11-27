@@ -30,7 +30,6 @@
     },
   },
   "trustedDependencies": [
-    "@ast-grep/cli",
     "esbuild",
   ],
   "patchedDependencies": {
